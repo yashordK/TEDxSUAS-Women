@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Desktop layout = wide landscape. Portrait tablets (≤ ~1100px) use the stacked layout. */
+@custom-variant desk (@media (min-width: 1100px) and (orientation: landscape));
+
 @theme inline {
   --color-ink: #050304;
   --color-ted: #eb0028;

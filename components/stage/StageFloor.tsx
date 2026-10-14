@@ -65,7 +65,7 @@ export function StageFloor() {
   return (
     <group>
       <mesh rotation-x={-Math.PI / 2} receiveShadow>
-        <planeGeometry args={[60, 40]} />
+        <planeGeometry args={[90, 90]} />
         {tier === "high" ? (
           <MeshReflectorMaterial
             blur={[300, 90]}

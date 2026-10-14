@@ -1,14 +1,15 @@
+const dot = <span className="block h-1 w-1 rounded-full bg-ted" aria-hidden />;
+
 export function BottomStrip() {
-  const items = ["Independently organized TED event", "[Event date]", "SUAS, Indore"];
   return (
-    <div className="relative z-20 border-t border-white/10 bg-ink/70 px-4 py-4 backdrop-blur-sm sm:px-8 lg:absolute lg:inset-x-0 lg:bottom-0 lg:border-white/5 lg:bg-transparent lg:px-16 lg:backdrop-blur-none">
-      <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[#cfc4c8]">
-        {items.map((t, i) => (
-          <li key={t} className="flex items-center gap-6">
-            {i > 0 && <span className="hidden h-1 w-1 rounded-full bg-ted sm:block" aria-hidden />}
-            {t}
-          </li>
-        ))}
+    <div className="relative z-20 bg-gradient-to-t from-ink/95 via-ink/80 to-transparent px-[max(1.25rem,env(safe-area-inset-left))] pb-[max(1rem,env(safe-area-inset-bottom))] pt-10 sm:px-[max(2rem,env(safe-area-inset-left))] desk:absolute desk:inset-x-0 desk:bottom-0 desk:bg-none desk:px-16 desk:pt-4 desk:pb-4">
+      {/* Phones: line 1 = event type, line 2 = date • venue. Wider: one line. */}
+      <ul className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[0.7rem] font-semibold uppercase leading-[1.4] tracking-[0.2em] text-[#cfc4c8] sm:gap-x-6">
+        <li className="w-full sm:w-auto">Independently organized TED event</li>
+        <li className="hidden sm:block">{dot}</li>
+        <li>4 February 2027</li>
+        <li>{dot}</li>
+        <li>SUAS, Indore</li>
       </ul>
     </div>
   );

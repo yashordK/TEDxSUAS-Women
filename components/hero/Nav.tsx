@@ -16,17 +16,17 @@ const focus = "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visi
 export function Nav() {
   const [open, setOpen] = useState(false);
   return (
-    <header className="relative z-30 flex items-center justify-between gap-6 px-4 py-4 sm:px-8 lg:px-16 lg:py-6">
+    <header className="relative z-30 flex items-center justify-between gap-6 px-[max(1.25rem,env(safe-area-inset-left))] py-4 sm:px-[max(2rem,env(safe-area-inset-left))] desk:px-16 desk:py-6">
       <a href="#top" className={`flex min-h-11 items-center rounded-sm ${focus}`}>
         <Image src="/brand/logo-white.png" alt="TEDxSUAS Women" width={2744} height={440} priority className="h-6 w-auto sm:h-7" />
       </a>
 
-      <nav aria-label="Primary" className="hidden items-center gap-1 lg:flex">
+      <nav aria-label="Primary" className="hidden items-center gap-1 desk:flex">
         {LINKS.map((l) => (
           <a
             key={l.href}
             href={l.href}
-            className={`flex min-h-11 items-center rounded-sm px-4 text-sm font-medium text-[#e8dfe2] transition-colors hover:text-white ${focus}`}
+            className={`flex min-h-11 items-center rounded-sm px-4 text-xs font-semibold uppercase leading-[1.4] tracking-[0.2em] text-[#e8dfe2] transition-colors hover:text-white ${focus}`}
           >
             {l.label}
           </a>
@@ -41,7 +41,7 @@ export function Nav() {
 
       <button
         type="button"
-        className={`flex min-h-11 min-w-11 items-center justify-center rounded-full border border-white/25 lg:hidden ${focus}`}
+        className={`flex min-h-11 min-w-11 items-center justify-center rounded-full border border-white/25 desk:hidden ${focus}`}
         aria-expanded={open}
         aria-controls="mobile-menu"
         aria-label={open ? "Close menu" : "Open menu"}
@@ -54,17 +54,24 @@ export function Nav() {
       </button>
 
       {open && (
+        <div
+          className="fixed inset-0 -z-10 bg-ink/75 backdrop-blur-sm desk:hidden"
+          onClick={() => setOpen(false)}
+          aria-hidden
+        />
+      )}
+      {open && (
         <nav
           id="mobile-menu"
           aria-label="Primary"
-          className="absolute inset-x-4 top-full rounded-2xl border border-white/10 bg-ink/95 p-3 backdrop-blur lg:hidden"
+          className="absolute inset-x-5 top-full rounded-2xl border border-white/10 bg-ink/95 p-3 backdrop-blur sm:inset-x-8 desk:hidden"
         >
           {LINKS.map((l) => (
             <a
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className={`flex min-h-11 items-center rounded-lg px-4 text-base text-[#e8dfe2] hover:bg-white/5 ${focus}`}
+              className={`flex min-h-11 items-center rounded-lg px-4 text-sm font-semibold uppercase leading-[1.4] tracking-[0.2em] text-[#e8dfe2] hover:bg-white/5 ${focus}`}
             >
               {l.label}
             </a>

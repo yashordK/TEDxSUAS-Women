@@ -41,42 +41,47 @@ export function HeroShell() {
   const live = phase === "live";
 
   return (
-    <div id="top" className="relative flex min-h-svh flex-col overflow-hidden bg-ink lg:h-svh lg:min-h-[640px]">
-      {/* Stage: full-bleed behind the copy on desktop, its own block on phones. */}
-      <div className="relative order-3 h-[56svh] min-h-[360px] w-full lg:absolute lg:inset-0 lg:order-none lg:h-auto">
+    <div id="top" className="relative flex min-h-svh flex-col overflow-x-clip bg-ink desk:h-svh desk:min-h-[640px] desk:overflow-hidden">
+      {/* Stage: fixed and full-bleed behind the whole page at every size. */}
+      <div className="fixed inset-0">
         {failed ? (
           <Image
             src="/reference/4.jpg"
             alt=""
             fill
             sizes="100vw"
-            className="object-cover object-[50%_78%] lg:object-[50%_72%]"
+            className="object-cover object-[50%_85%] desk:object-[50%_72%]"
             priority
           />
         ) : (
           <StageCanvas started={live} onReady={onReady} onFail={onFail} />
         )}
-        {/* Phone: blend the top of the stage into the copy above. */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-ink to-transparent lg:hidden" aria-hidden />
-        {/* Desktop scrim behind the copy. */}
+        {/* Desktop scrims: behind the copy on the left, and under the strip. */}
         <div
-          className="pointer-events-none absolute inset-y-0 left-0 hidden w-[62%] bg-gradient-to-r from-ink via-ink/80 to-transparent lg:block"
+          className="pointer-events-none absolute inset-y-0 left-0 hidden w-[62%] bg-gradient-to-r from-ink via-ink/80 to-transparent desk:block"
           aria-hidden
         />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-40 bg-gradient-to-t from-ink/90 to-transparent lg:block" aria-hidden />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-40 bg-gradient-to-t from-ink/90 to-transparent desk:block" aria-hidden />
       </div>
 
-      <div className="order-1">
+      {/* Nav + copy. On narrow screens a vertical scrim sits behind them and fades out
+          just below the buttons, so the stage rises out of the dark with no seam. */}
+      <div className="relative desk:flex desk:flex-1 desk:flex-col">
+        <div className="pointer-events-none absolute inset-0 bg-ink/90 desk:hidden" aria-hidden />
+        <div
+          className="pointer-events-none absolute inset-x-0 top-full h-28 bg-gradient-to-b from-ink/90 to-transparent sm:h-36 desk:hidden"
+          aria-hidden
+        />
         <Nav />
+        <main className="relative px-[max(1.25rem,env(safe-area-inset-left))] pb-1 pt-7 sm:px-[max(2rem,env(safe-area-inset-left))] sm:pt-9 desk:flex desk:flex-1 desk:flex-col desk:justify-center desk:px-16 desk:pb-24 desk:pt-0">
+          <HeroCopy visible={live} reducedMotion={reducedMotion} />
+        </main>
       </div>
 
-      <main className="relative order-2 flex flex-1 flex-col justify-center px-4 pb-2 pt-2 sm:px-8 lg:px-16 lg:pb-24">
-        <HeroCopy visible={live} reducedMotion={reducedMotion} />
-      </main>
+      {/* Narrow screens: the open space where the stage shows. */}
+      <div className="min-h-[22svh] flex-1 desk:hidden" aria-hidden />
 
-      <div className="order-4">
-        <BottomStrip />
-      </div>
+      <BottomStrip />
 
       <AnimatePresence>
         {phase === "loading" && (
