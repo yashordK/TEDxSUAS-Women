@@ -56,12 +56,13 @@ export function HeroCopy({ visible, reducedMotion }: HeroCopyProps) {
           <Wordmark />
         </motion.h1>
 
-        <motion.div variants={item} className="mt-5 sm:mt-6">
+        <motion.div variants={item} className="mt-9 sm:mt-6">
           <p className="text-sm font-medium uppercase leading-[1.4] tracking-[0.6em] text-white sm:text-base" aria-hidden>
             Call for
           </p>
           {/* 19.6cqw ≈ the container width for Playfair 700 "SPEAKERS" at 0.01em tracking (≈5.0em wide). */}
-          <p className="mt-2 whitespace-nowrap font-display text-[19.6cqw] leading-none tracking-[0.01em] text-white sm:mt-3" aria-hidden>
+          {/* Phones: a size smaller so the hero breathes; full logo width from sm up. */}
+          <p className="mt-2 whitespace-nowrap font-display text-[15.5cqw] leading-none tracking-[0.01em] text-white sm:mt-3 sm:text-[19.6cqw]" aria-hidden>
             SPEAKERS
           </p>
           <span className="sr-only">Call for speakers</span>

@@ -22,20 +22,22 @@ export function Venue() {
 
       {/* Campus, red-lit */}
       <FadeIn className="relative mt-16 md:mt-20">
-        <div className="relative aspect-[16/10] w-full overflow-hidden md:aspect-[21/9]">
+        <div className="relative aspect-[4/3] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-[2/1]">
           <Image
             src="/images/venue-suas.webp"
             alt="Symbiosis University of Applied Sciences campus at night, its curved facade lit red"
             fill
             sizes="100vw"
-            className="object-cover object-[60%_50%]"
+            className="object-cover object-[42%_30%]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-black/60" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-transparent" />
-          <div className="gutter absolute inset-x-0 bottom-0 pb-8 md:pb-14">
-            <p className="display max-w-xl text-[clamp(1.75rem,4vw,3.5rem)]">{site.venue.name}</p>
-            <p className="eyebrow mt-4 text-white/80">{site.venue.city}, Madhya Pradesh</p>
-          </div>
+          {/* title sits over the dark road; keep the facade and logo clear */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent via-30% to-black/30 sm:from-black sm:via-black/10 sm:via-35% sm:to-black/40" />
+          <div className="absolute inset-0 hidden bg-gradient-to-r from-black/50 via-transparent via-40% to-transparent sm:block" />
+        </div>
+        {/* Phones: below the photo so the facade stays visible. sm+: over the dark road. */}
+        <div className="gutter pt-8 sm:absolute sm:inset-x-0 sm:bottom-0 sm:pb-10 sm:pt-0 md:pb-14">
+          <p className="display max-w-xl text-[clamp(1.75rem,4vw,3.5rem)]">{site.venue.name}</p>
+          <p className="eyebrow mt-4 text-white/80">{site.venue.city}, Madhya Pradesh</p>
         </div>
       </FadeIn>
 
