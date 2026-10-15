@@ -451,11 +451,13 @@ body:has(.closing-band) footer {
 .image-hero {
   min-height: max(520px, 100svh);
 }
+/* object-position per page (PageHero props); phones override below */
+.image-hero-img {
+  object-position: var(--hero-pos);
+}
 @media (max-width: 639px) {
-  /* Phones see ~a third of the wide mosaic: anchor on the right-hand tiles
-     (curtain + mic column) so no tile is cut mid-subject. */
   .image-hero-img {
-    object-position: 92% center !important;
+    object-position: var(--hero-pos-m) !important;
   }
 }
 .image-hero-beam {

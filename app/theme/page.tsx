@@ -20,6 +20,8 @@ export default function ThemePage() {
         intro={`${first} ${second}: three Sanskrit words, one idea. Change does not wait for someone else.`}
         image="/images/theme-hero.webp"
         imagePosition="right center"
+        // phones see ~a third of the wide mosaic: anchor on the curtain + mic tiles
+        mobilePosition="92% center"
       />
       <Theme />
     </main>

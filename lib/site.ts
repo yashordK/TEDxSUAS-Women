@@ -34,6 +34,7 @@ export const site = {
 
   venue: {
     name: "Symbiosis University of Applied Sciences",
+    short: "SUAS",
     city: "Indore",
     display: "Symbiosis University of Applied Sciences, Indore",
     address: [

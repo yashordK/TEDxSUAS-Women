@@ -1,12 +1,12 @@
 "use client";
 
-import Image from "next/image";
+import { getImageProps } from "next/image";
 import { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 
 /**
- * Full-bleed image hero for inner pages (used on /theme for now; the other pages still
- * use the compact components/ui/page-hero.tsx). Layers, back to front: the photo (supplied
+ * Full-bleed image hero for inner pages (/theme, /about; the other pages still use the
+ * compact components/ui/page-hero.tsx). Layers, back to front: the photo (supplied
  * already graded) with scroll parallax, a light top shade and bottom fade, grain, a slow red beam + haze (desktop only), outline echo, title.
  * Everything is clipped to the hero, and the bottom fades to #050304 so the next
  * section joins without a seam.
@@ -18,6 +18,8 @@ export function PageHero({
   intro,
   image,
   imagePosition = "50% 50%",
+  mobileImage,
+  mobilePosition,
 }: {
   eyebrow: string;
   title: string;
@@ -26,11 +28,23 @@ export function PageHero({
   intro: string;
   image: string;
   imagePosition?: string;
+  /** Optional art-directed crop for phones (below 640px). */
+  mobileImage?: string;
+  /** object-position below 640px (defaults to imagePosition, or centre with mobileImage). */
+  mobilePosition?: string;
 }) {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
+
+  const common = { alt: "", fill: true, priority: true, sizes: "100vw" } as const;
+  const desktop = getImageProps({ ...common, src: image }).props;
+  const mobile = mobileImage ? getImageProps({ ...common, src: mobileImage }).props : null;
+  const pos = {
+    "--hero-pos": imagePosition,
+    "--hero-pos-m": mobilePosition ?? (mobileImage ? "50% 50%" : imagePosition),
+  } as React.CSSProperties;
 
   const heading = (
     <>
@@ -51,15 +65,11 @@ export function PageHero({
     >
       {/* 1. image + red grade + fades. Oversized so the parallax never shows an edge. */}
       <motion.div aria-hidden style={reduce ? undefined : { y }} className="absolute inset-x-0 -inset-y-[10%]">
-        <Image
-          src={image}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="image-hero-img object-cover"
-          style={{ objectPosition: imagePosition, transformOrigin: imagePosition }}
-        />
+        <picture>
+          {mobile && <source media="(max-width: 639px)" srcSet={mobile.srcSet} sizes={mobile.sizes} />}
+          {/* art-directed <picture>; src/srcSet come from getImageProps */}
+          <img {...desktop} alt="" className="image-hero-img object-cover" style={{ ...desktop.style, ...pos }} />
+        </picture>
       </motion.div>
       <span
         aria-hidden

@@ -1,7 +1,6 @@
+import Link from "next/link";
 import { site } from "@/lib/site";
-import { SectionHeading } from "@/components/ui/section-heading";
 import { FadeIn } from "@/components/ui/reveal";
-import { ReelEmbed } from "@/components/ui/reel-embed";
 
 // Official TED boilerplate (reference/tedxsuas-2026/CONTENT.md). Keep word for word.
 const BLOCKS = [
@@ -15,55 +14,89 @@ const BLOCKS = [
   },
 ];
 
-const EXPECT = [
-  ["Live talks", "Women with lived experience and hard-won insight, each bringing one idea worth carrying home."],
-  ["Conversations", "The talks end; the conversations shouldn't. Time and space to meet the people in the room."],
-  ["A day to begin", "Leave with a thought you can act on the next morning. That is the whole point."],
-];
+const SECTION = "gutter relative py-16 md:py-24";
+const H2 = "display text-[clamp(2rem,4.5vw,3.5rem)]";
 
-export function About() {
+/** "What is TEDx?": the official TED and TEDx text, unchanged, plus the ted.com link. */
+export function WhatIsTedx() {
   return (
-    <section id="about" aria-labelledby="about-title" className="gutter relative border-t border-line py-28 md:py-40">
-      <SectionHeading id="about-title" index="02" label="About" title="Ideas worth" accent="spreading." />
-
-      <div className="mt-20 grid gap-16 lg:grid-cols-12">
-        <div className="lg:col-span-7">
-          <FadeIn>
-            <p className="text-[clamp(1.35rem,2.4vw,2rem)] font-medium leading-snug text-white">
-              <span className="text-red-text">{site.name}</span> is a women-led edition of TEDx at
-              Symbiosis University of Applied Sciences, Indore: a stage for women&apos;s voices,
-              ideas and agency, and for everyone ready to listen to them.
-            </p>
+    <section aria-labelledby="what-is-tedx" className={SECTION}>
+      <FadeIn>
+        <h2 id="what-is-tedx" className={H2}>
+          What is <span className="text-red-text">TEDx?</span>
+        </h2>
+      </FadeIn>
+      <div className="mt-10 grid gap-12 lg:grid-cols-2 lg:gap-16">
+        {BLOCKS.map((b, i) => (
+          <FadeIn key={b.k} delay={i * 0.08}>
+            <h3 className="eyebrow text-red-text">About {b.k}</h3>
+            <p className="mt-4 max-w-[62ch] text-[17px] leading-[1.7] text-[#cfc4c8] md:text-[18px]">{b.body}</p>
           </FadeIn>
-
-          <div className="mt-14 grid gap-10 sm:grid-cols-2">
-            {BLOCKS.map((b, i) => (
-              <FadeIn key={b.k} delay={i * 0.1}>
-                <h3 className="eyebrow border-t border-red pt-5 text-white">About {b.k}</h3>
-                <p className="mt-4 text-grey">{b.body}</p>
-              </FadeIn>
-            ))}
-          </div>
-
-          <FadeIn className="mt-16">
-            <h3 className="eyebrow text-white">What to expect</h3>
-            <ul className="mt-6 divide-y divide-line border-y border-line">
-              {EXPECT.map(([t, d], i) => (
-                <li key={t} className="grid gap-2 py-6 md:grid-cols-[3rem_14rem_1fr] md:gap-6">
-                  <span className="eyebrow text-red-text">0{i + 1}</span>
-                  <span className="text-lg font-semibold text-white">{t}</span>
-                  <span className="text-grey">{d}</span>
-                </li>
-              ))}
-            </ul>
-          </FadeIn>
-        </div>
-
-        <FadeIn className="lg:col-span-4 lg:col-start-9" delay={0.15}>
-          <ReelEmbed url={site.featuredReel} />
-          <p className="eyebrow mt-5 text-grey">From the TEDxSUAS stage</p>
-        </FadeIn>
+        ))}
       </div>
+      <FadeIn className="mt-10 flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-6">
+        <a
+          href={site.tedxUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex min-h-11 items-center text-white underline decoration-red underline-offset-4 hover:text-red-text"
+        >
+          What is TEDx?
+        </a>
+        <p className="text-sm text-white/70">{site.disclaimer}</p>
+      </FadeIn>
     </section>
+  );
+}
+
+/** "About this event": date, venue and theme facts from lib/site.ts, then a short note. */
+export function AboutEvent() {
+  const facts = [
+    { k: "Date", v: <time dateTime={site.date.iso}>{site.date.display}</time> },
+    { k: "Venue", v: `${site.venue.short}, ${site.venue.city}` },
+    {
+      k: "Theme",
+      v: (
+        <>
+          <span lang="sa" className="font-deva-display block">{site.theme.devanagari}</span>
+          <span className="mt-1 block font-sans text-sm font-medium tracking-wide text-[#cfc4c8]">{site.theme.tagline}</span>
+        </>
+      ),
+    },
+  ];
+  return (
+    <section aria-labelledby="about-event" className={`${SECTION} border-t border-line`}>
+      <FadeIn>
+        <h2 id="about-event" className={H2}>
+          About this <span className="text-red-text">event</span>
+        </h2>
+      </FadeIn>
+      <dl className="mt-12 grid gap-10 md:grid-cols-3 md:gap-8">
+        {facts.map((f, i) => (
+          <FadeIn key={f.k} delay={i * 0.08}>
+            <dt className="eyebrow text-red-text">{f.k}</dt>
+            <dd className="display mt-3 text-[clamp(1.75rem,3vw,2.5rem)] leading-[1.15] text-white">{f.v}</dd>
+          </FadeIn>
+        ))}
+      </dl>
+      <FadeIn className="mt-14 max-w-[62ch] space-y-4 text-[17px] leading-[1.7] text-[#cfc4c8] md:text-[18px]">
+        <p>
+          {site.name} is a women-led edition of TEDx at {site.venue.display}: a stage for women&apos;s
+          voices, ideas and agency, and for everyone ready to listen to them.
+        </p>
+        <p>Organised by {site.organisers.map((o) => o.name).join(" and ")}.</p>
+      </FadeIn>
+    </section>
+  );
+}
+
+/** Quiet closing link; the Apply buttons live in the header and on /speak. */
+export function AboutOutro() {
+  return (
+    <div className={`${SECTION} border-t border-line`}>
+      <Link href="/speak" className="inline-flex min-h-11 items-center text-lg text-white underline decoration-red underline-offset-4 hover:text-red-text">
+        Call for speakers →
+      </Link>
+    </div>
   );
 }
