@@ -28,12 +28,17 @@ ${noiseGLSL}
 void main() {
   vec3 V = normalize(cameraPosition - vWorldPos);
   // Fresnel falloff: dense through the core, dissolving at the silhouette.
-  float facing = abs(dot(normalize(vNormalW), V));
-  float core = pow(facing, 1.6);
+  // Guards: the apex normal can collapse to ~0, and pow() of a negative is undefined.
+  // A single NaN here gets smeared across the whole frame by bloom.
+  vec3 N = vNormalW;
+  float nl = length(N);
+  float facing = nl > 1e-4 ? abs(dot(N / nl, V)) : 0.0;
+  float core = pow(clamp(facing, 0.0, 1.0), 1.6);
 
   // Brighter at the source, softly fading before it hits the floor.
-  float along = mix(0.35, 1.0, pow(vAlong, 1.3));
-  along *= smoothstep(0.0, 0.12, vAlong);
+  float t = clamp(vAlong, 0.0, 1.0);
+  float along = mix(0.35, 1.0, pow(t, 1.3));
+  along *= smoothstep(0.0, 0.12, t);
 
   // Drifting smoke inside the beam.
   vec3 p = vWorldPos * vec3(1.6, 0.55, 1.6) + vec3(0.0, -uTime * 0.12, uTime * 0.05);
@@ -41,6 +46,7 @@ void main() {
   float smoke = mix(0.45, 1.25, smoothstep(0.25, 0.75, n));
 
   float a = core * along * smoke * uIntensity;
+  a = (a == a) ? clamp(a, 0.0, 4.0) : 0.0; // drop NaN/inf
   gl_FragColor = vec4(uColor * a, 1.0); // premultiplied, additive
 }
 `;
