@@ -355,45 +355,76 @@ html.has-custom-cursor select {
   }
 }
 
-/* /speakers lineup placeholders (components/sections/lineup.tsx). The glow stays inside. */
+/* /speakers lineup placeholders (components/sections/lineup.tsx). Everything stays inside. */
 .lineup-podium {
   position: relative;
   display: flex;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 3 / 2.8; /* ~30% shorter than the original 3:4 */
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
   overflow: hidden;
-  padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
-  border: 1px solid rgb(235 0 40 / 0.55);
+  padding-bottom: clamp(1rem, 2.2vw, 1.75rem);
+  border: 1px solid rgb(235 0 40 / 0.4);
   background: #080405;
   text-align: center;
+  transition: border-color 0.4s var(--ease-out-expo);
 }
 .lineup-podium-tall {
-  aspect-ratio: 3 / 4.6;
+  aspect-ratio: 3 / 3.22; /* ~15% taller than the sides */
 }
-.lineup-podium-glow {
+/* Beam: a trapezoid falling from the top centre, #EB0028 ~35% fading out. */
+.lineup-beam {
   position: absolute;
-  inset: -30% -10% 25%;
-  background: radial-gradient(50% 60% at 50% 0%, rgb(255 59 85 / 0.32), rgb(235 0 40 / 0.1) 55%, transparent 75%);
-  animation: lineup-glow 7s ease-in-out infinite;
-  animation-delay: inherit;
+  inset: 0 0 12%;
+  background: linear-gradient(180deg, rgb(235 0 40 / 0.35), rgb(235 0 40 / 0.12) 60%, transparent);
+  clip-path: polygon(40% 0, 60% 0, 88% 100%, 12% 100%);
+  filter: blur(6px);
+  animation: lineup-pulse 6s ease-in-out infinite;
+  animation-delay: var(--pulse-delay, 0s);
+  transition: filter 0.4s var(--ease-out-expo);
   pointer-events: none;
 }
-@keyframes lineup-glow {
+/* Pool: soft red ellipse where the beam lands, around the mic mark. */
+.lineup-pool {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: 4%;
+  height: 34%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(235 0 40 / 0.38), rgb(235 0 40 / 0.12) 60%, transparent);
+  animation: lineup-pulse 6s ease-in-out infinite;
+  animation-delay: var(--pulse-delay, 0s);
+  pointer-events: none;
+}
+@keyframes lineup-pulse {
   0%, 100% { opacity: 0.7; }
   50% { opacity: 1; }
 }
+@media (hover: hover) and (min-width: 768px) {
+  .lineup-podium:hover {
+    border-color: rgb(235 0 40 / 0.8);
+  }
+  .lineup-podium:hover .lineup-beam {
+    filter: blur(6px) brightness(1.35);
+  }
+}
 @media (prefers-reduced-motion: reduce) {
-  .lineup-podium-glow {
+  .lineup-beam,
+  .lineup-pool {
     animation: none;
+  }
+  .lineup-podium,
+  .lineup-beam {
+    transition: none;
   }
 }
 @media (max-width: 639px) {
-  /* stacked on phones: shorter panels so all three don't take three screens */
+  /* stacked on phones: wide, short panels (also ~30% shorter than before) */
   .lineup-podium,
   .lineup-podium-tall {
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 16 / 7;
   }
 }
 
