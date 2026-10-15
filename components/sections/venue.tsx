@@ -1,95 +1,109 @@
 import Image from "next/image";
 import { site } from "@/lib/site";
-import { SectionHeading } from "@/components/ui/section-heading";
 import { FadeIn } from "@/components/ui/reveal";
-import { CalendarIcon, PinIcon } from "@/components/ui/icons";
 
-const NOTES = [
-  ["By air", "The campus sits on the Super Corridor, a short drive from Devi Ahilya Bai Holkar Airport."],
-  ["By road", "Cabs and autos run along the Super Corridor from across the city. Allow extra time on event morning."],
-  ["On arrival", "Volunteers will guide you from the gate to registration. Keep your confirmation handy."],
-];
+const SECTION = "gutter relative py-14 md:py-20";
+const H2 = "display text-[clamp(2rem,4.5vw,3.5rem)]";
+const BODY = "max-w-[62ch] text-[17px] leading-[1.7] text-[#cfc4c8] md:text-[18px]";
 
-export function Venue() {
-  const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(site.venue.mapQuery)}&output=embed`;
-  const mapLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.venue.mapQuery)}`;
-
+/** "Where it happens": date, venue and city from lib/site.ts, plus one line from existing copy. */
+export function VenueFacts() {
+  const facts = [
+    { k: "Date", v: <time dateTime={site.date.iso}>{site.date.display}</time> },
+    { k: "Venue", v: site.venue.name },
+    { k: "City", v: site.venue.city },
+  ];
   return (
-    <section id="venue" aria-labelledby="venue-title" className="relative border-t border-line py-28 md:py-40">
-      <div className="gutter">
-        <SectionHeading id="venue-title" index="05" label="Venue" title="Where it" accent="begins." />
-      </div>
-
-      {/* Campus, red-lit */}
-      <FadeIn className="relative mt-16 md:mt-20">
-        <div className="relative aspect-[4/3] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-[2/1]">
-          <Image
-            src="/images/venue-suas.webp"
-            alt="Symbiosis University of Applied Sciences campus at night, its curved facade lit red"
-            fill
-            sizes="100vw"
-            className="object-cover object-[42%_30%]"
-          />
-          {/* title sits over the dark road; keep the facade and logo clear */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent via-30% to-black/30 sm:from-black sm:via-black/10 sm:via-35% sm:to-black/40" />
-          <div className="absolute inset-0 hidden bg-gradient-to-r from-black/50 via-transparent via-40% to-transparent sm:block" />
-        </div>
-        {/* Phones: below the photo so the facade stays visible. sm+: over the dark road. */}
-        <div className="gutter pt-8 sm:absolute sm:inset-x-0 sm:bottom-0 sm:pb-10 sm:pt-0 md:pb-14">
-          <p className="display max-w-xl text-[clamp(1.75rem,4vw,3.5rem)]">{site.venue.name}</p>
-          <p className="eyebrow mt-4 text-white/80">{site.venue.city}, Madhya Pradesh</p>
-        </div>
+    <section aria-labelledby="venue-title" className={SECTION}>
+      <FadeIn>
+        <h2 id="venue-title" className={H2}>
+          Where it <span className="text-red-text">happens</span>
+        </h2>
       </FadeIn>
+      <dl className="mt-12 grid gap-10 md:grid-cols-3 md:gap-8">
+        {facts.map((f, i) => (
+          <FadeIn key={f.k} delay={i * 0.08}>
+            <dt className="eyebrow text-red-text">{f.k}</dt>
+            <dd className="display mt-3 text-[clamp(1.75rem,3vw,2.5rem)] leading-[1.15] text-white">{f.v}</dd>
+          </FadeIn>
+        ))}
+      </dl>
+      <FadeIn className="mt-12">
+        <p className={BODY}>
+          {site.name} takes place on {site.date.display} at {site.venue.display}, on the Super Corridor near the
+          airport.
+        </p>
+      </FadeIn>
+    </section>
+  );
+}
 
-      <div className="gutter mt-16 grid gap-14 md:mt-20 lg:grid-cols-12">
-        <div className="lg:col-span-5">
-          <ul className="space-y-6">
-            <li className="flex items-center gap-5">
-              <span className="text-red-text"><CalendarIcon /></span>
-              <span aria-hidden className="h-12 w-px bg-white/30" />
-              <time dateTime={site.date.iso} className="text-lg text-white">{site.date.display}</time>
-            </li>
-            <li className="flex items-center gap-5">
-              <span className="text-red-text"><PinIcon /></span>
-              <span aria-hidden className="h-16 w-px bg-white/30" />
-              <address className="not-italic text-white">
-                {site.venue.address.map((l) => (
-                  <span key={l} className="block">{l}</span>
-                ))}
-              </address>
-            </li>
-          </ul>
+/** Wide auditorium band: the About photo, cropped to the left with the stage in view. */
+export function AuditoriumBand() {
+  return (
+    <figure className="relative h-[clamp(320px,55vh,620px)] w-full overflow-hidden">
+      <Image
+        src="/images/about-hero.webp"
+        alt=""
+        fill
+        sizes="100vw"
+        className="object-cover object-[left_center]"
+      />
+      <span aria-hidden className="absolute inset-0 bg-[linear-gradient(90deg,rgb(5_3_4/0.85),rgb(5_3_4/0.2)_45%,transparent_70%)]" />
+      <span aria-hidden className="absolute inset-x-0 top-0 h-[18%] bg-gradient-to-b from-[#050304] to-transparent" />
+      <span aria-hidden className="absolute inset-x-0 bottom-0 h-[18%] bg-gradient-to-t from-[#050304] to-transparent" />
+      <figcaption className="gutter eyebrow absolute inset-x-0 bottom-6 text-[#cfc4c8] md:bottom-10">The auditorium</figcaption>
+    </figure>
+  );
+}
 
-          <ul className="mt-12 divide-y divide-line border-y border-line">
-            {NOTES.map(([k, v]) => (
-              <li key={k} className="grid gap-1 py-5 sm:grid-cols-[7rem_1fr] sm:gap-4">
-                <span className="eyebrow pt-1 text-red-text">{k}</span>
-                <span className="text-grey">{v}</span>
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3">
-            <a href={mapLink} target="_blank" rel="noopener noreferrer" className="eyebrow inline-flex min-h-11 items-center border-b border-red text-white hover:text-red-text">
-              Open in Google Maps →
+/**
+ * "Getting here": renders only the fields that are filled in lib/site.ts
+ * (venue.address, venue.mapUrl, venue.notes), so no placeholder ever shows.
+ */
+export function GettingHere() {
+  const { address, mapUrl, notes } = site.venue;
+  const hasAddress = address.length > 0 && !address.some((l) => l.startsWith("TODO"));
+  if (!hasAddress && !mapUrl && notes.length === 0) return null;
+  return (
+    <section aria-labelledby="getting-here" className={`${SECTION} border-t border-line`}>
+      <FadeIn>
+        <h2 id="getting-here" className={H2}>
+          Getting <span className="text-red-text">here</span>
+        </h2>
+      </FadeIn>
+      <div className="mt-10 grid gap-12 lg:grid-cols-12">
+        <FadeIn className="lg:col-span-5">
+          {hasAddress && (
+            <address className="not-italic text-[17px] leading-[1.7] text-white md:text-[18px]">
+              {address.map((l) => (
+                <span key={l} className="block">{l}</span>
+              ))}
+            </address>
+          )}
+          {mapUrl && (
+            <a
+              href={mapUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex min-h-11 items-center text-white underline decoration-red underline-offset-4 hover:text-red-text"
+            >
+              Open in Maps
             </a>
-            <a href={site.venue.website} target="_blank" rel="noopener noreferrer" className="eyebrow inline-flex min-h-11 items-center border-b border-white/30 text-white hover:border-red">
-              suas.ac.in →
-            </a>
-          </div>
-        </div>
-
-        <FadeIn className="lg:col-span-7" delay={0.1}>
-          <div className="relative aspect-[4/3] overflow-hidden border border-line">
-            <iframe
-              title={`Map: ${site.venue.display}`}
-              src={mapSrc}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="absolute inset-0 h-full w-full [filter:invert(0.92)_hue-rotate(180deg)_grayscale(0.6)_contrast(0.95)]"
-            />
-          </div>
+          )}
         </FadeIn>
+        {notes.length > 0 && (
+          <FadeIn className="lg:col-span-7" delay={0.08}>
+            <ul className="divide-y divide-line border-y border-line">
+              {notes.map((n) => (
+                <li key={n.k} className="grid gap-1 py-5 sm:grid-cols-[8rem_1fr] sm:gap-6">
+                  <span className="eyebrow pt-1 text-red-text">{n.k}</span>
+                  <span className={BODY}>{n.v}</span>
+                </li>
+              ))}
+            </ul>
+          </FadeIn>
+        )}
       </div>
     </section>
   );

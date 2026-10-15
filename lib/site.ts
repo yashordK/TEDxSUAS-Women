@@ -43,6 +43,15 @@ export const site = {
       "Madhya Pradesh 453112",
     ],
     mapQuery: "Symbiosis University of Applied Sciences, Super Corridor, Indore",
+    // Google Maps search for mapQuery. Empty string hides the "Open in Maps" link.
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=Symbiosis%20University%20of%20Applied%20Sciences%2C%20Super%20Corridor%2C%20Indore",
+    // Travel notes for /venue (only rendered when non-empty).
+    // TODO: entry gate and parking details once confirmed by the organisers.
+    notes: [
+      { k: "By air", v: "The campus sits on the Super Corridor, a short drive from Devi Ahilya Bai Holkar Airport." },
+      { k: "By road", v: "Cabs and autos run along the Super Corridor from across the city. Allow extra time on event morning." },
+      { k: "On arrival", v: "Volunteers will guide you from the gate to registration. Keep your confirmation handy." },
+    ] as { k: string; v: string }[],
     website: "https://www.suas.ac.in",
   },
 
