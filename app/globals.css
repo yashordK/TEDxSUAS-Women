@@ -457,6 +457,9 @@ html.has-custom-cursor select {
 }
 
 /* /team tiles (components/sections/team.tsx): one 4:5 frame for photos and placeholders. */
+.team-tile {
+  transition: transform 0.35s var(--ease-out-expo);
+}
 .team-frame {
   position: relative;
   display: flex;
@@ -466,12 +469,26 @@ html.has-custom-cursor select {
   overflow: hidden;
   border: 1px solid rgb(235 0 40 / 0.35);
   background: #070304;
-  transition: border-color 0.4s var(--ease-out-expo);
+  transition: border-color 0.35s var(--ease-out-expo);
 }
 .team-glow {
   position: absolute;
   inset: -20% -10% 30%;
   background: radial-gradient(50% 60% at 50% 0%, rgb(235 0 40 / 0.28), rgb(235 0 40 / 0.08) 55%, transparent 75%);
+  pointer-events: none;
+}
+.team-initials {
+  color: rgb(235 0 40 / 0);
+  -webkit-text-stroke: 1px rgb(255 77 94 / 0.92);
+  transition: color 0.35s var(--ease-out-expo);
+}
+/* Spotlight that follows the cursor (--mx/--my set on pointermove). */
+.team-spot {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(160px circle at var(--mx, 50%) var(--my, 30%), rgb(255 59 85 / 0.22), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
   pointer-events: none;
 }
 .team-photo {
@@ -488,9 +505,18 @@ html.has-custom-cursor select {
   transition: opacity 0.6s var(--ease-out-expo);
   pointer-events: none;
 }
-@media (hover: hover) and (min-width: 768px) {
+@media (hover: hover) and (pointer: fine) {
   .team-tile:hover .team-frame {
-    border-color: rgb(235 0 40 / 0.8);
+    border-color: rgb(235 0 40 / 0.85);
+  }
+  .team-tile:hover {
+    transform: translateY(-4px);
+  }
+  .team-tile:hover .team-spot {
+    opacity: 1;
+  }
+  .team-tile:hover .team-initials {
+    color: rgb(235 0 40 / 0.4);
   }
   .team-tile:hover .team-photo {
     filter: none;
@@ -499,12 +525,52 @@ html.has-custom-cursor select {
     opacity: 0;
   }
 }
+.team-tile:focus-visible .team-frame {
+  border-color: rgb(235 0 40 / 0.85);
+}
 @media (prefers-reduced-motion: reduce) {
-  .team-frame,
-  .team-photo,
-  .team-tint {
+  /* keep only the outline change */
+  .team-tile,
+  .team-tile:hover {
+    transform: none;
     transition: none;
   }
+  .team-tile:hover .team-spot {
+    opacity: 0;
+  }
+  .team-tile:hover .team-initials {
+    color: rgb(235 0 40 / 0);
+  }
+  .team-photo,
+  .team-tint,
+  .team-initials {
+    transition: none;
+  }
+}
+/* Filter chips */
+.team-chip {
+  min-height: 44px;
+  padding: 0 1.1rem;
+  border: 1px solid rgb(255 255 255 / 0.18);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #cfc4c8;
+  transition: border-color 0.25s, background-color 0.25s, color 0.25s;
+}
+.team-chip:hover {
+  border-color: rgb(235 0 40 / 0.7);
+  color: #fff;
+}
+.team-chip[aria-pressed="true"] {
+  border-color: #eb0028;
+  background: #eb0028;
+  color: #fff;
+}
+.team-chip:focus-visible {
+  outline: 2px solid #ff3b55;
+  outline-offset: 3px;
 }
 
 /* Home: podium cards (components/home/teasers.tsx). The cone stays inside the card. */
