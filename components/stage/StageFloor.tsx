@@ -7,6 +7,7 @@ import * as THREE from "three";
 import { glowFragment, hazeVertex } from "./shaders/haze";
 import { range, useStage } from "./StageContext";
 import { createFiberNoise, createRadialTexture } from "./textures";
+import { FloorPhoto } from "./FloorPhoto";
 
 export const DISC_RADIUS = 3.6;
 
@@ -86,6 +87,9 @@ export function StageFloor() {
           <meshStandardMaterial color="#0d0204" roughness={0.28} metalness={0.65} envMapIntensity={0.7} />
         )}
       </mesh>
+
+      {/* Photographed floor boards over the glossy base, faded out at every edge. */}
+      <FloorPhoto />
 
       {/* Red bloom bleeding from the disc onto the glossy floor. */}
       <mesh rotation-x={-Math.PI / 2} position-y={0.002} renderOrder={1}>

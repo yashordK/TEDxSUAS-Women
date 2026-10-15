@@ -533,69 +533,6 @@ body:has(.closing-band) footer {
   }
 }
 
-/* ------------------------------------------------------------------
-   Home hero (components/hero/HeroShell.tsx): static stage photo, CSS-only motion.
-   --glow-x/y track the spotlit mic in each crop.
-   ------------------------------------------------------------------ */
-.home-hero-media {
-  transform-origin: 75% 55%;
-  animation: home-hero-push 24s ease-in-out infinite alternate;
-}
-@keyframes home-hero-push {
-  from { transform: scale(1); }
-  to { transform: scale(1.05); }
-}
-.home-hero-glow {
-  --glow-x: 40%;
-  --glow-y: 58%;
-  position: absolute;
-  left: var(--glow-x);
-  top: var(--glow-y);
-  width: min(60vw, 520px);
-  aspect-ratio: 1;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(235 0 40 / 0.28), transparent);
-  mix-blend-mode: screen;
-  animation: home-hero-glow 6s ease-in-out infinite alternate;
-  pointer-events: none;
-}
-@media (max-width: 639px) {
-  .home-hero-media {
-    transform-origin: 50% 55%;
-  }
-  .home-hero-glow {
-    --glow-x: 50%;
-    --glow-y: 60%;
-  }
-}
-/* Tablet portrait: the wide photo can't slide further right, so drop it 14% to bring the
-   mic head below the title instead of behind it (the top scrim covers the band above). */
-@media (min-width: 640px) and (orientation: portrait) {
-  .home-hero-media {
-    top: 14%;
-  }
-  .home-hero-glow {
-    --glow-y: 62%;
-  }
-}
-@media (min-width: 1024px) and (orientation: landscape) {
-  .home-hero-glow {
-    --glow-x: 75%;
-    --glow-y: 55%;
-  }
-}
-@keyframes home-hero-glow {
-  from { opacity: 0.7; }
-  to { opacity: 1; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .home-hero-media,
-  .home-hero-glow {
-    animation: none;
-  }
-}
-
 /* Film grain: one static SVG noise tile, composited once */
 @utility grain {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
