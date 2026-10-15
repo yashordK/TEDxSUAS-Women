@@ -32,7 +32,7 @@ export function Nav() {
           </a>
         ))}
         <a
-          href="#apply"
+          href="/speak"
           className={`ml-4 inline-flex min-h-11 items-center rounded-full border border-ted px-6 text-sm font-semibold text-white transition-colors hover:bg-ted ${focus}`}
         >
           Apply to speak
@@ -77,7 +77,7 @@ export function Nav() {
             </a>
           ))}
           <a
-            href="#apply"
+            href="/speak"
             onClick={() => setOpen(false)}
             className={`mt-2 flex min-h-11 items-center justify-center rounded-full border border-ted font-semibold text-white ${focus}`}
           >

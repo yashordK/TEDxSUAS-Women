@@ -40,7 +40,7 @@ export function Faq() {
   return (
     <section id="faq" aria-labelledby="faq-title" className="gutter relative border-t border-line py-28 md:py-40">
       <div className="grid gap-14 lg:grid-cols-12">
-        <SectionHeading id="faq-title" index="06" label="FAQ" title="Before you" accent="ask." className="lg:col-span-5" />
+        <SectionHeading id="faq-title" index="07" label="FAQ" title="Before you" accent="ask." className="lg:col-span-5" />
 
         <ul className="border-t border-line lg:col-span-7">
           {FAQS.map((f, i) => {

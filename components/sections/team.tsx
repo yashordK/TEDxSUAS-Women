@@ -14,7 +14,7 @@ const initials = (name: string) =>
 export function Team() {
   return (
     <section id="team" aria-labelledby="team-title" className="gutter relative border-t border-line py-28 md:py-40">
-      <SectionHeading id="team-title" index="04" label="Organising Team" title="The people" accent="behind it." />
+      <SectionHeading id="team-title" index="05" label="Organising Team" title="The people" accent="behind it." />
 
       {/* Core leadership */}
       <div className="mt-20 flex items-center gap-6">

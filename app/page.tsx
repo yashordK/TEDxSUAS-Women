@@ -2,6 +2,7 @@ import { HeroShell } from "@/components/hero/HeroShell";
 import { Theme } from "@/components/sections/theme";
 import { Marquee } from "@/components/sections/marquee";
 import { About } from "@/components/sections/about";
+import { Ideas } from "@/components/sections/ideas";
 import { Speakers } from "@/components/sections/speakers";
 import { Team } from "@/components/sections/team";
 import { Venue } from "@/components/sections/venue";
@@ -16,6 +17,7 @@ export default function Home() {
         <Theme />
         <Marquee />
         <About />
+        <Ideas />
         <Speakers />
         <Team />
         <Venue />
