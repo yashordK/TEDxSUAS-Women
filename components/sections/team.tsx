@@ -120,18 +120,6 @@ const TEAM_ICONS: Record<string, React.ReactNode> = {
       <path d="M3 10v4h3l6 4V6L6 10H3ZM16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12" />
     </svg>
   ),
-  "Video Production & Design": (
-    <svg viewBox="0 0 24 24" className={ic} {...stroke} aria-hidden>
-      <rect x="3" y="8" width="18" height="12" rx="1.5" />
-      <path d="m3 8 2.5-4h13L21 8M10 11.5v5l4.5-2.5z" />
-    </svg>
-  ),
-  "Design, AV & Production": (
-    <svg viewBox="0 0 24 24" className={ic} {...stroke} aria-hidden>
-      <rect x="3" y="4" width="18" height="12" rx="1.5" />
-      <path d="M8 20h8M12 16v4M9 12l6-6" />
-    </svg>
-  ),
   "Event Manager": (
     <svg viewBox="0 0 24 24" className={ic} {...stroke} aria-hidden>
       <rect x="3.5" y="5" width="17" height="15" rx="2" />
