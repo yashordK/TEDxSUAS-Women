@@ -355,43 +355,45 @@ html.has-custom-cursor select {
   }
 }
 
-/* Empty podium under a soft beam. */
-.podium {
+/* /speakers lineup placeholders (components/sections/lineup.tsx). The glow stays inside. */
+.lineup-podium {
   position: relative;
-  aspect-ratio: 3 / 5;
+  display: flex;
+  aspect-ratio: 3 / 4;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+  padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  border: 1px solid rgb(235 0 40 / 0.55);
+  background: #080405;
+  text-align: center;
 }
-.podium-beam {
+.lineup-podium-tall {
+  aspect-ratio: 3 / 4.6;
+}
+.lineup-podium-glow {
   position: absolute;
-  inset: 0 10% 18%;
-  background: linear-gradient(180deg, rgb(255 236 228 / 0.18), rgb(255 236 228 / 0.04) 80%, transparent);
-  clip-path: polygon(40% 0, 60% 0, 100% 100%, 0 100%);
-  animation: podium-breathe 6s ease-in-out infinite;
+  inset: -30% -10% 25%;
+  background: radial-gradient(50% 60% at 50% 0%, rgb(255 59 85 / 0.32), rgb(235 0 40 / 0.1) 55%, transparent 75%);
+  animation: lineup-glow 7s ease-in-out infinite;
   animation-delay: inherit;
+  pointer-events: none;
 }
-.podium-pool {
-  position: absolute;
-  inset: auto 0 6%;
-  height: 18%;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(255 59 85 / 0.55), rgb(235 0 40 / 0.18) 60%, transparent);
-}
-.podium-stand {
-  position: absolute;
-  left: 32%;
-  right: 32%;
-  bottom: 13%;
-  height: 22%;
-  background: linear-gradient(180deg, #1a0a0e, #050304);
-  border-top: 1px solid rgb(235 0 40 / 0.6);
-  box-shadow: 0 -8px 30px -10px rgb(235 0 40 / 0.5);
-}
-@keyframes podium-breathe {
-  0%, 100% { opacity: 0.75; }
+@keyframes lineup-glow {
+  0%, 100% { opacity: 0.7; }
   50% { opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .podium-beam {
+  .lineup-podium-glow {
     animation: none;
+  }
+}
+@media (max-width: 639px) {
+  /* stacked on phones: shorter panels so all three don't take three screens */
+  .lineup-podium,
+  .lineup-podium-tall {
+    aspect-ratio: 16 / 10;
   }
 }
 
@@ -521,9 +523,9 @@ body:has(.closing-band) footer {
   height: 5px;
   border-radius: 50%;
   background: #eb0028;
-  animation: scroll-cue 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  animation: hero-scroll-cue 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
-@keyframes scroll-cue {
+@keyframes hero-scroll-cue {
   0% { transform: translateY(-6px); opacity: 0; }
   20% { opacity: 1; }
   80% { opacity: 1; }
@@ -544,65 +546,6 @@ body:has(.closing-band) footer {
 /* ------------------------------------------------------------------
    Keyframes (all transform/opacity/mask only, compositor-friendly)
    ------------------------------------------------------------------ */
-@keyframes calligraphy-reveal {
-  from {
-    -webkit-mask-position: 100% 0;
-    mask-position: 100% 0;
-  }
-  to {
-    -webkit-mask-position: 0% 0;
-    mask-position: 0% 0;
-  }
-}
-
-/* Pen edge riding the calligraphy mask: edge centre moves -0.5W → 1.5W */
-@keyframes pen-sweep {
-  0% {
-    transform: translateX(-50%);
-    opacity: 0;
-  }
-  15%,
-  85% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(150%);
-    opacity: 0;
-  }
-}
-
-@keyframes shimmer-sweep {
-  0% {
-    transform: translateX(-120%) skewX(-18deg);
-  }
-  55%,
-  100% {
-    transform: translateX(320%) skewX(-18deg);
-  }
-}
-
-@keyframes ribbon-drift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
-  }
-  50% {
-    transform: translate3d(-3%, 1.5%, 0) rotate(-1.5deg) scale(1.04);
-  }
-}
-
-@keyframes glow-breathe {
-  0%,
-  100% {
-    opacity: 0.55;
-    transform: translate3d(-50%, -50%, 0) scale(1);
-  }
-  50% {
-    opacity: 0.85;
-    transform: translate3d(-50%, -50%, 0) scale(1.08);
-  }
-}
-
 @keyframes streak {
   0% {
     transform: translateX(-100%);
