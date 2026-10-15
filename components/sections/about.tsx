@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { site } from "@/lib/site";
 import { FadeIn } from "@/components/ui/reveal";
 
@@ -14,8 +13,9 @@ const BLOCKS = [
   },
 ];
 
-const SECTION = "gutter relative py-16 md:py-24";
+const SECTION = "gutter relative py-14 md:py-20";
 const H2 = "display text-[clamp(2rem,4.5vw,3.5rem)]";
+const BODY = "mt-4 max-w-[62ch] text-[17px] leading-[1.7] text-[#cfc4c8] md:text-[18px]";
 
 /** "What is TEDx?": the official TED and TEDx text, unchanged, plus the ted.com link. */
 export function WhatIsTedx() {
@@ -26,25 +26,31 @@ export function WhatIsTedx() {
           What is <span className="text-red-text">TEDx?</span>
         </h2>
       </FadeIn>
-      <div className="mt-10 grid gap-12 lg:grid-cols-2 lg:gap-16">
-        {BLOCKS.map((b, i) => (
-          <FadeIn key={b.k} delay={i * 0.08}>
-            <h3 className="eyebrow text-red-text">About {b.k}</h3>
-            <p className="mt-4 max-w-[62ch] text-[17px] leading-[1.7] text-[#cfc4c8] md:text-[18px]">{b.body}</p>
+      {/* Shorter TED text + the link on the left, the long TEDx text on the wider right:
+          both top-aligned at the same size, so neither column leaves a gap. */}
+      <div className="mt-10 grid items-start gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="lg:col-span-5">
+          <FadeIn>
+            <h3 className="eyebrow text-red-text">About {BLOCKS[0].k}</h3>
+            <p className={BODY}>{BLOCKS[0].body}</p>
           </FadeIn>
-        ))}
+          <FadeIn className="mt-8">
+            <a
+              href={site.tedxUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-11 items-center text-white underline decoration-red underline-offset-4 hover:text-red-text"
+            >
+              What is TEDx?
+            </a>
+            <p className="text-sm text-white/70">{site.disclaimer}</p>
+          </FadeIn>
+        </div>
+        <FadeIn className="lg:col-span-7" delay={0.08}>
+          <h3 className="eyebrow text-red-text">About {BLOCKS[1].k}</h3>
+          <p className={BODY}>{BLOCKS[1].body}</p>
+        </FadeIn>
       </div>
-      <FadeIn className="mt-10 flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-6">
-        <a
-          href={site.tedxUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex min-h-11 items-center text-white underline decoration-red underline-offset-4 hover:text-red-text"
-        >
-          What is TEDx?
-        </a>
-        <p className="text-sm text-white/70">{site.disclaimer}</p>
-      </FadeIn>
     </section>
   );
 }
@@ -87,16 +93,5 @@ export function AboutEvent() {
         <p>Organised by {site.organisers.map((o) => o.name).join(" and ")}.</p>
       </FadeIn>
     </section>
-  );
-}
-
-/** Quiet closing link; the Apply buttons live in the header and on /speak. */
-export function AboutOutro() {
-  return (
-    <div className={`${SECTION} border-t border-line`}>
-      <Link href="/speak" className="inline-flex min-h-11 items-center text-lg text-white underline decoration-red underline-offset-4 hover:text-red-text">
-        Call for speakers →
-      </Link>
-    </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useId, useState } from "react";
+import Link from "next/link";
 import { site } from "@/lib/site";
 
 /** Edit questions here. Keep answers factual: only what organisers have confirmed. */
@@ -32,12 +33,12 @@ const FAQS = [
   },
 ];
 
-export function Faq() {
+export function Faq({ footerLink }: { footerLink?: { href: string; label: string } } = {}) {
   const [open, setOpen] = useState<number | null>(0);
   const base = useId();
 
   return (
-    <section id="faq" aria-labelledby="faq-title" className="gutter relative border-t border-line py-16 md:py-24">
+    <section id="faq" aria-labelledby="faq-title" className="gutter relative border-t border-line py-14 md:py-20">
       <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
         <h2 id="faq-title" className="display text-[clamp(2rem,4.5vw,3.5rem)] lg:col-span-4">Questions</h2>
 
@@ -86,6 +87,13 @@ export function Faq() {
             );
           })}
         </ul>
+        {footerLink && (
+          <p className="lg:col-span-8 lg:col-start-5 lg:text-right">
+            <Link href={footerLink.href} className="inline-flex min-h-11 items-center text-lg text-white underline decoration-red underline-offset-4 hover:text-red-text">
+              {footerLink.label}
+            </Link>
+          </p>
+        )}
       </div>
     </section>
   );

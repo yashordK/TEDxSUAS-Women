@@ -1,7 +1,7 @@
 import { pageMeta } from "@/lib/seo";
 import { site } from "@/lib/site";
 import { PageHero } from "@/components/page-hero";
-import { AboutEvent, AboutOutro, WhatIsTedx } from "@/components/sections/about";
+import { AboutEvent, WhatIsTedx } from "@/components/sections/about";
 import { Faq } from "@/components/sections/faq";
 
 export const metadata = pageMeta({
@@ -20,11 +20,12 @@ export default function AboutPage() {
         image="/images/about-hero.webp"
         imagePosition="right center"
         mobileImage="/images/about-hero-mobile.webp"
+        // stage and curtain fully below the nav; the seats fill the lower frame
+        imageShift="clamp(56px, 8svh, 90px)"
       />
       <WhatIsTedx />
       <AboutEvent />
-      <Faq />
-      <AboutOutro />
+      <Faq footerLink={{ href: "/speak", label: "Call for speakers →" }} />
     </main>
   );
 }

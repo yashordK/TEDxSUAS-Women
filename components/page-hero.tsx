@@ -20,6 +20,7 @@ export function PageHero({
   imagePosition = "50% 50%",
   mobileImage,
   mobilePosition,
+  imageShift,
 }: {
   eyebrow: string;
   title: string;
@@ -32,11 +33,14 @@ export function PageHero({
   mobileImage?: string;
   /** object-position below 640px (defaults to imagePosition, or centre with mobileImage). */
   mobilePosition?: string;
+  /** Push the photo down (CSS length), e.g. to keep a stage clear of the nav. */
+  imageShift?: string;
 }) {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
+  // 0 at the top of the page (the photo sits where it was framed), drifting down as it scrolls away.
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "8%"]);
 
   const common = { alt: "", fill: true, priority: true, sizes: "100vw" } as const;
   const desktop = getImageProps({ ...common, src: image }).props;
@@ -44,6 +48,7 @@ export function PageHero({
   const pos = {
     "--hero-pos": imagePosition,
     "--hero-pos-m": mobilePosition ?? (mobileImage ? "50% 50%" : imagePosition),
+    ...(imageShift ? { transform: `translateY(${imageShift})` } : {}),
   } as React.CSSProperties;
 
   const heading = (
