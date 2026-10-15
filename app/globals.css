@@ -456,6 +456,57 @@ html.has-custom-cursor select {
   }
 }
 
+/* /team tiles (components/sections/team.tsx): one 4:5 frame for photos and placeholders. */
+.team-frame {
+  position: relative;
+  display: flex;
+  aspect-ratio: 4 / 5;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgb(235 0 40 / 0.35);
+  background: #070304;
+  transition: border-color 0.4s var(--ease-out-expo);
+}
+.team-glow {
+  position: absolute;
+  inset: -20% -10% 30%;
+  background: radial-gradient(50% 60% at 50% 0%, rgb(235 0 40 / 0.28), rgb(235 0 40 / 0.08) 55%, transparent 75%);
+  pointer-events: none;
+}
+.team-photo {
+  filter: grayscale(1) contrast(1.05);
+  transition: filter 0.6s var(--ease-out-expo);
+}
+/* ~25% dark-red multiply so mixed photo quality reads as one set */
+.team-tint {
+  position: absolute;
+  inset: 0;
+  background: #5a0010;
+  opacity: 0.25;
+  mix-blend-mode: multiply;
+  transition: opacity 0.6s var(--ease-out-expo);
+  pointer-events: none;
+}
+@media (hover: hover) and (min-width: 768px) {
+  .team-tile:hover .team-frame {
+    border-color: rgb(235 0 40 / 0.8);
+  }
+  .team-tile:hover .team-photo {
+    filter: none;
+  }
+  .team-tile:hover .team-tint {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .team-frame,
+  .team-photo,
+  .team-tint {
+    transition: none;
+  }
+}
+
 /* Home: podium cards (components/home/teasers.tsx). The cone stays inside the card. */
 .podium-card {
   position: relative;

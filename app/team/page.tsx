@@ -1,6 +1,6 @@
 import { pageMeta } from "@/lib/seo";
 import { site } from "@/lib/site";
-import { PageHero } from "@/components/ui/page-hero";
+import { PageHero } from "@/components/page-hero";
 import { Team } from "@/components/sections/team";
 
 export const metadata = pageMeta({
@@ -13,10 +13,12 @@ export default function TeamPage() {
   return (
     <main id="main">
       <PageHero
-        eyebrow="Organising Team"
-        title="The people"
-        accent="behind it."
-        intro="The organisers and the team putting the day together."
+        eyebrow={site.name}
+        title="TEAM"
+        intro="The people behind the stage."
+        image="/images/team-hero.webp"
+        imagePosition="right center"
+        mobileImage="/images/team-hero-mobile.webp"
       />
       <Team />
     </main>
