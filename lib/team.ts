@@ -17,7 +17,7 @@ export const coreLeadership: Member[] = [
 export const teams: { name: string; members: Member[] }[] = [
   {
     name: "Curator Team",
-    members: [{ name: "Yash Upadhyay" }, { name: "Twinkle Ramchandani" }, { name: "Prashasti Verma" }],
+    members: [{ name: "Yash Upadhyay" }, { name: "Twinkle Ramchandani" }],
   },
   {
     name: "Communication, Editorial & Marketing",
