@@ -74,11 +74,8 @@ export function HomeTeasers() {
           <h2 id="t-speakers" className="display text-[clamp(2rem,5vw,3.75rem)]">
             The stage is <span className="text-red-text">waiting.</span>
           </h2>
-          <div className="mt-8 flex flex-col items-center gap-2 sm:flex-row sm:justify-center sm:gap-8">
-            <Link href="/speak" className="cta cta-primary">
-              <span className="relative z-10">Apply to speak</span>
-              <Arrow />
-            </Link>
+          {/* One action here; Apply lives in the hero and the closing band. */}
+          <div className="mt-8 flex justify-center">
             <TextLink href="/speakers">Meet the speakers</TextLink>
           </div>
         </FadeIn>

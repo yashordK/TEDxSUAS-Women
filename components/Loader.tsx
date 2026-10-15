@@ -2,11 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { useProgress } from "@react-three/drei";
 
 const MIN_DURATION = 2500;
 const FLARE_MS = 520;
-const PRELOAD = ["/brand/logo-white.png", "/brand/tedx_logo.png", "/reference/4.jpg"];
+const PRELOAD = ["/brand/logo-white.png", "/brand/tedx_logo.png", "/images/home-hero.webp"];
 
 export interface LoaderProps {
   /** True once the 3D scene has compiled and rendered (or WebGL failed). */
@@ -17,7 +16,6 @@ export interface LoaderProps {
 
 /** "Mic spotlight" loader: the beam widens as real progress climbs to 100. */
 export function Loader({ sceneReady, reducedMotion, onComplete }: LoaderProps) {
-  const { progress: assetProgress, total } = useProgress();
   const [images, setImages] = useState(0);
   const [pct, setPct] = useState(0);
   const [flare, setFlare] = useState(false);
@@ -34,8 +32,8 @@ export function Loader({ sceneReady, reducedMotion, onComplete }: LoaderProps) {
     });
   }, []);
 
-  const three = total === 0 ? 1 : assetProgress / 100;
-  target.current = ((images / PRELOAD.length) * 0.3 + three * 0.25 + (sceneReady ? 0.45 : 0)) * 100;
+  // Preloaded images, then the hero photo itself (sceneReady).
+  target.current = ((images / PRELOAD.length) * 0.4 + (sceneReady ? 0.6 : 0)) * 100;
 
   useEffect(() => {
     const start = performance.now();

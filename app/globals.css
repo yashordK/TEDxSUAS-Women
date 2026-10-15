@@ -446,18 +446,16 @@ body:has(.closing-band) footer {
 /* ------------------------------------------------------------------
    Image page hero (components/page-hero.tsx)
    ------------------------------------------------------------------ */
+/* One full screen (small viewport height, so mobile browser bars never cut it).
+   No upper cap: on a 1080px-tall screen a cap would pull the next section above the fold. */
 .image-hero {
-  height: var(--hero-h, 70vh);
+  min-height: max(520px, 100svh);
 }
 @media (max-width: 639px) {
-  .image-hero {
-    height: 60vh;
-  }
-  /* Portrait crops would show the whole source (incl. the poster's own text in 4.jpg).
-     Zoom 2.6x anchored low: shows ~52%-90% of the source height, the stage only. */
+  /* Phones see ~a third of the wide mosaic: anchor on the right-hand tiles
+     (curtain + mic column) so no tile is cut mid-subject. */
   .image-hero-img {
-    transform: scale(2.6);
-    transform-origin: 50% 85% !important;
+    object-position: 92% center !important;
   }
 }
 .image-hero-beam {
@@ -498,6 +496,102 @@ body:has(.closing-band) footer {
 @media (prefers-reduced-motion: reduce) {
   .image-hero-beam,
   .image-hero-haze {
+    animation: none;
+  }
+}
+
+/* Scroll cue: a 1px line with a dot sliding down it. */
+.scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(1rem, 3svh, 2rem);
+  width: 1px;
+  height: 44px;
+  transform: translateX(-50%);
+  background: rgb(255 255 255 / 0.25);
+  overflow: hidden;
+}
+.scroll-cue-dot {
+  position: absolute;
+  left: -2px;
+  top: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #eb0028;
+  animation: scroll-cue 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes scroll-cue {
+  0% { transform: translateY(-6px); opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(44px); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Home hero (components/hero/HeroShell.tsx): static stage photo, CSS-only motion.
+   --glow-x/y track the spotlit mic in each crop.
+   ------------------------------------------------------------------ */
+.home-hero-media {
+  transform-origin: 75% 55%;
+  animation: home-hero-push 24s ease-in-out infinite alternate;
+}
+@keyframes home-hero-push {
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
+}
+.home-hero-glow {
+  --glow-x: 40%;
+  --glow-y: 58%;
+  position: absolute;
+  left: var(--glow-x);
+  top: var(--glow-y);
+  width: min(60vw, 520px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(235 0 40 / 0.28), transparent);
+  mix-blend-mode: screen;
+  animation: home-hero-glow 6s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@media (max-width: 639px) {
+  .home-hero-media {
+    transform-origin: 50% 55%;
+  }
+  .home-hero-glow {
+    --glow-x: 50%;
+    --glow-y: 60%;
+  }
+}
+/* Tablet portrait: the wide photo can't slide further right, so drop it 14% to bring the
+   mic head below the title instead of behind it (the top scrim covers the band above). */
+@media (min-width: 640px) and (orientation: portrait) {
+  .home-hero-media {
+    top: 14%;
+  }
+  .home-hero-glow {
+    --glow-y: 62%;
+  }
+}
+@media (min-width: 1024px) and (orientation: landscape) {
+  .home-hero-glow {
+    --glow-x: 75%;
+    --glow-y: 55%;
+  }
+}
+@keyframes home-hero-glow {
+  from { opacity: 0.7; }
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-hero-media,
+  .home-hero-glow {
     animation: none;
   }
 }
