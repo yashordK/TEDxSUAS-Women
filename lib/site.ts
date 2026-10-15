@@ -69,6 +69,20 @@ export const site = {
     { label: "YouTube", href: "#" },
   ],
 
+  // Directions the lineup is being curated around (not a final programme). Shown on
+  // /speakers; /speak can reuse them.
+  directions: [
+    { n: "01", title: "Survivor Stories", sub: "Rebuilding After Trauma", line: "Healing isn't just overcoming hardship, it's reclaiming identity, confidence and purpose." },
+    { n: "02", title: "Data & Policy", sub: "State of Women Today", line: "An evidence-based look at economic participation, healthcare and representation for women." },
+    { n: "03", title: "Call to Action", sub: "Everyone's Responsibility", line: "Real change starts with everyday choices, not just governments or institutions." },
+    { n: "04", title: "Skills for the Digital Age", sub: "Safety as Empowerment", line: "Everyday digital safety is a skill everyone needs, not just IT experts." },
+    { n: "05", title: "Women's Health", sub: "Breaking the Silence", line: "Menstrual health, reproductive health, preventive care and wellbeing." },
+    { n: "06", title: "Art", sub: "Storytelling & Social Change", line: "How creative expression can shape perspectives and influence communities." },
+    { n: "07", title: "Fashion", sub: "Beyond Clothing", line: "Fashion as a lens for identity, culture, confidence and innovation." },
+    { n: "08", title: "Science & Innovation", sub: "Women Driving Discovery", line: "Highlighting women researchers, scientists and innovators shaping the future." },
+  ],
+  directionTags: ["Personal stories", "Creative expression", "Scientific innovation", "Practical knowledge", "Social issues"],
+
   // TEDx rules: sponsors never appear on the homepage, only on /sponsors, with logos
   // smaller than the TEDx logo. TODO: add confirmed sponsors here; empty hides the page link.
   sponsors: [] as { name: string; logo: string; href?: string }[],

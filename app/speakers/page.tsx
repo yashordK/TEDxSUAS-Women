@@ -5,6 +5,7 @@ import { speakers } from "@/lib/speakers";
 import { PageHero } from "@/components/page-hero";
 import { ThemeWords } from "@/components/brand/theme-words";
 import { FadeIn } from "@/components/ui/reveal";
+import { Directions } from "@/components/sections/directions";
 import { LineupPlaceholders } from "@/components/sections/lineup";
 import { SpeakerGrid } from "@/components/sections/speaker-grid";
 
@@ -52,8 +53,14 @@ export default function SpeakersPage() {
           </h2>
         </FadeIn>
         <div className="mt-12">{revealed ? <SpeakerGrid /> : <LineupPlaceholders />}</div>
+      </section>
 
-        <FadeIn className="mt-14 space-y-4">
+      <section aria-labelledby="ideas-title" className={`${SECTION} border-t border-line`}>
+        <Directions />
+      </section>
+
+      <section aria-label="How speakers are chosen" className={`${SECTION} border-t border-line`}>
+        <FadeIn className="space-y-4">
           <p className={BODY}>
             Our speakers are chosen from open applications and invitations. They share ideas, not products.
           </p>

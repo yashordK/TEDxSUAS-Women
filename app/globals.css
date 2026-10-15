@@ -397,6 +397,34 @@ html.has-custom-cursor select {
   }
 }
 
+/* /speakers "Ideas we're exploring" rows (components/sections/directions.tsx). */
+.direction-num {
+  color: transparent;
+  -webkit-text-stroke: 1px #eb0028;
+  transition: color 0.35s var(--ease-out-expo);
+}
+.direction-row {
+  transition: transform 0.35s var(--ease-out-expo);
+}
+/* hover only where a real pointer can hover (not on touch) */
+@media (hover: hover) and (min-width: 768px) {
+  .direction-row:hover {
+    transform: translateX(6px);
+  }
+  .direction-row:hover .direction-num {
+    color: #eb0028;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .direction-row,
+  .direction-num {
+    transition: none;
+  }
+  .direction-row:hover {
+    transform: none;
+  }
+}
+
 /* Home: podium cards (components/home/teasers.tsx). The cone stays inside the card. */
 .podium-card {
   position: relative;
