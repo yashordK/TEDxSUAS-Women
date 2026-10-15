@@ -60,9 +60,9 @@ export default function StageCanvas({ started, onReady, onFail }: StageCanvasPro
       <StageContext.Provider value={runtime}>
         <Canvas
           shadows
-          dpr={tier === "high" ? [1, 1.5] : [1, 1.25]}
+          dpr={tier === "high" ? [1, 1.75] : [1, 1.25]}
           gl={{ antialias: false, powerPreference: "high-performance", stencil: false }}
-          camera={{ position: [0, 5, 23], fov: 18, near: 0.1, far: 80 }}
+          camera={{ position: [0, 4.6, 19], fov: 30, near: 0.1, far: 60 }}
           onCreated={({ gl }) => {
             gl.toneMapping = THREE.ACESFilmicToneMapping;
             gl.outputColorSpace = THREE.SRGBColorSpace;

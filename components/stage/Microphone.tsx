@@ -132,14 +132,15 @@ function ProceduralMic() {
   );
 
   const stand = (
-    // Polished chrome: mirrors the studio env (red strip, warm softbox), brushed along the tube.
     <meshPhysicalMaterial
-      color="#a9a9b0"
-      metalness={1}
-      roughness={0.38}
-      clearcoat={0.2}
-      clearcoatRoughness={0.25}
-      envMapIntensity={0.7}
+      color="#08080a"
+      metalness={0.5}
+      roughness={0.48}
+      roughnessMap={brushed}
+      anisotropy={0.85}
+      clearcoat={0.1}
+      clearcoatRoughness={0.3}
+      envMapIntensity={0.25}
     />
   );
 
@@ -147,13 +148,13 @@ function ProceduralMic() {
     <group>
       <mesh geometry={geo.base} castShadow receiveShadow>
         <meshPhysicalMaterial
-          color="#cfcfd4"
-          metalness={1}
-          roughness={0.34}
+          color="#0b0b0d"
+          metalness={0.85}
+          roughness={0.26}
           roughnessMap={brushed}
           anisotropy={0.5}
           clearcoat={1}
-          clearcoatRoughness={0.2}
+          clearcoatRoughness={0.08}
           envMapIntensity={1.1}
         />
       </mesh>
@@ -186,10 +187,10 @@ function ProceduralMic() {
 
         <group position={[0, -0.01, 0]}>
           <mesh geometry={geo.body} castShadow>
-            <meshPhysicalMaterial color="#0e0e11" metalness={0.75} roughness={0.3} clearcoat={1} clearcoatRoughness={0.2} envMapIntensity={1.2} />
+            <meshPhysicalMaterial color="#0e0e11" metalness={0.75} roughness={0.24} clearcoat={1} clearcoatRoughness={0.04} envMapIntensity={1.6} />
           </mesh>
           <mesh geometry={geo.band} castShadow>
-            <meshPhysicalMaterial color="#b4b4ba" metalness={1} roughness={0.3} roughnessMap={brushed} envMapIntensity={1.8} />
+            <meshPhysicalMaterial color="#b4b4ba" metalness={1} roughness={0.16} anisotropy={0.6} roughnessMap={brushed} envMapIntensity={1.8} />
           </mesh>
           {/* Spherical mesh grille + dark acoustic foam inside. */}
           <mesh position={[0, 0.212, 0]} castShadow>
@@ -200,10 +201,10 @@ function ProceduralMic() {
               normalScale={new THREE.Vector2(1.6, 1.6)}
               roughnessMap={grille.roughnessMap}
               metalness={1}
-              roughness={0.42}
+              roughness={0.9}
               clearcoat={0.35}
-              clearcoatRoughness={0.2}
-              envMapIntensity={1.6}
+              clearcoatRoughness={0.05}
+              envMapIntensity={2}
             />
           </mesh>
           <mesh position={[0, 0.212, 0]}>

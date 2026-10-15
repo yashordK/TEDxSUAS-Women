@@ -5,8 +5,6 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { easing } from "maath";
 import * as THREE from "three";
 import { ease, useStage } from "./StageContext";
-import { MIC_TARGET } from "./Lights";
-import { leftFade } from "./shaders/patch";
 
 const INTRO_SECONDS = 2.8;
 
@@ -49,19 +47,15 @@ function getFraming(aspect: number, height: number, band: Band): Framing {
   if (aspect >= 1) {
     // Landscape phones / very short windows: pull back so the mic reads smaller
     // and the whole stage stays in frame under the strip.
-    // Low camera ~10° above the floor plane, tight 18° lens, looking at the mic.
     const k = height <= 520 ? 1.18 : 1;
-    const dist = 21 * k;
-    const elev = THREE.MathUtils.degToRad(10);
-    const look = new THREE.Vector3(...MIC_TARGET);
-    const to = new THREE.Vector3(0, look.y + dist * Math.sin(elev), dist * Math.cos(elev));
+    const v = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z * k);
     return {
-      fov: 18,
+      fov: 30,
       filmOffset: -Math.min(8, Math.max(0, (aspect - 1.15) * 11)),
-      from: to.clone().multiplyScalar(1.1),
-      to,
-      look,
-      parallax: 0.5,
+      from: v(0, 4.6, 19),
+      to: v(0, 3.4, 13.2),
+      look: new THREE.Vector3(0, 1.75, -0.4),
+      parallax: 1,
       shiftY: 0,
     };
   }
@@ -118,12 +112,6 @@ export function CameraRig() {
   const goal = useMemo(() => new THREE.Vector3(), []);
 
   useEffect(() => {
-    const portrait = size.width / size.height < 1;
-    leftFade.uFadeX0.value = portrait ? -40 : -6.5;
-    leftFade.uFadeX1.value = portrait ? -39 : -1.2;
-  }, [size.width, size.height]);
-
-  useEffect(() => {
     camera.fov = framing.fov;
     camera.filmGauge = 35;
     camera.filmOffset = framing.filmOffset;
@@ -158,7 +146,7 @@ export function CameraRig() {
     goal.set(
       base.x + runtime.pointer.x * 0.55 * par + Math.sin(t * 0.13) * 0.18 * drift,
       base.y + runtime.pointer.y * 0.22 * par + Math.sin(t * 0.21) * 0.06 * drift,
-      base.z * (1 + Math.sin(t * 0.09) * 0.03 * drift),
+      base.z + Math.sin(t * 0.09) * 0.12 * drift,
     );
 
     if (p < 1 && !runtime.reducedMotion) {

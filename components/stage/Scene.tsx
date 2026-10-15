@@ -2,18 +2,16 @@
 
 import { useEffect, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { Suspense } from "react";
-import { ContactShadows } from "@react-three/drei";
-import { BeamFrame, Dust, Haze, SpotBeam } from "./Atmosphere";
-import { Backdrop } from "./Backdrop";
+import { BackGlow, Dust, Haze, SpotBeam } from "./Atmosphere";
 import { CameraRig } from "./CameraRig";
-import { Carpet } from "./Carpet";
+import { Curtains } from "./Curtains";
 import { Effects } from "./Effects";
 import { Lights } from "./Lights";
 import { Microphone } from "./Microphone";
 import { StageEnvironment } from "./StageEnvironment";
+import { StageFloor } from "./StageFloor";
+import { StageSet } from "./StageSet";
 import { useStage } from "./StageContext";
-import { WoodFloor } from "./WoodFloor";
 
 /** Fires once shaders are compiled and a few frames have actually rendered. */
 function ReadySignal({ onReady }: { onReady: () => void }) {
@@ -40,26 +38,20 @@ export function Scene({ onReady }: { onReady: () => void }) {
   return (
     <>
       <color attach="background" args={["#050304"]} />
-      {/* Exponential dark fog: the floor and backdrop dissolve into the room, no horizon line. */}
-      <fogExp2 attach="fog" args={["#050304", 0.022]} />
+      <fogExp2 attach="fog" args={["#0b0205", 0.04]} />
       <StageEnvironment />
       <Lights />
       <CameraRig />
 
-      {/* Textured surfaces stream in; the mic, beam and lights render meanwhile. */}
-      <Suspense fallback={null}>
-        <WoodFloor />
-        <Carpet />
-        <Backdrop />
-      </Suspense>
+      <StageFloor />
+      <StageSet />
+      <Curtains />
+      <BackGlow />
       <Microphone />
-      <ContactShadows position={[0, 0.004, 0]} scale={1.6} blur={2.4} far={0.6} opacity={0.85} resolution={high ? 512 : 256} frames={1} />
 
       <Haze />
-      <BeamFrame>
-        <SpotBeam />
-        <Dust count={high ? 520 : 200} />
-      </BeamFrame>
+      <SpotBeam />
+      <Dust count={high ? 700 : 260} />
 
       <Effects />
       <ReadySignal onReady={onReady} />

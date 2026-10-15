@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo } from "react";
-import { useThree } from "@react-three/fiber";
 import {
   Bloom,
   ChromaticAberration,
@@ -27,11 +26,9 @@ class GradeEffect extends Effect {
 
 export function Effects() {
   const { tier } = useStage();
-  const narrow = useThree((st) => st.size.width < 768);
-  // Phones and weak GPUs: no DoF, no chromatic aberration.
-  const high = tier === "high" && !narrow;
+  const high = tier === "high";
   const grade = useMemo(() => new GradeEffect(1), []);
-  const caOffset = useMemo(() => new THREE.Vector2(0.0006, 0.0004), []); // edges only (radial)
+  const caOffset = useMemo(() => new THREE.Vector2(0.0009, 0.0006), []);
 
   if (!high) {
     return (
@@ -48,14 +45,13 @@ export function Effects() {
   return (
     // multisampling > 0 renders black on ANGLE/D3D11 with this effect chain.
     <EffectComposer multisampling={0}>
-      {/* focus on the mic; the backdrop 6 units behind goes soft */}
-      <DepthOfField target={MIC_TARGET} focalLength={0.045} bokehScale={1.2} height={540} />
-      <Bloom mipmapBlur luminanceThreshold={0.92} luminanceSmoothing={0.15} intensity={0.6} radius={0.7} />
+      <DepthOfField target={MIC_TARGET} focalLength={0.03} bokehScale={1.1} height={540} />
+      <Bloom mipmapBlur luminanceThreshold={0.9} luminanceSmoothing={0.15} intensity={1.05} radius={0.75} />
       <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
       <primitive object={grade} />
       <ChromaticAberration offset={caOffset} radialModulation modulationOffset={0.45} />
       <Vignette offset={0.26} darkness={0.85} />
-      <Noise premultiply blendFunction={BlendFunction.SOFT_LIGHT} opacity={0.14} />
+      <Noise premultiply blendFunction={BlendFunction.SOFT_LIGHT} opacity={0.16} />
     </EffectComposer>
   );
 }
