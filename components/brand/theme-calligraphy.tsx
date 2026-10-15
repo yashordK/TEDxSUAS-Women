@@ -48,9 +48,14 @@ export function ThemeCalligraphy({
         {failed ? (
           <span
             lang="sa"
-            className="font-deva text-gradient absolute inset-0 flex items-center justify-center whitespace-nowrap text-[clamp(2.75rem,12vw,10rem)] font-extrabold leading-none"
+            className="font-deva-display absolute inset-0 flex items-center justify-center whitespace-nowrap text-[clamp(2.75rem,12vw,10rem)]"
           >
-            {site.theme.devanagari}
+            {site.theme.devanagari.split(" ").map((w, i) => (
+                <span key={w} className={i === 0 ? "text-white" : "text-[#EB0028]"}>
+                  {i > 0 && " "}
+                  {w}
+                </span>
+              ))}
           </span>
         ) : (
           <div className="absolute inset-0 overflow-hidden">

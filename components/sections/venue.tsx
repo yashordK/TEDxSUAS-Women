@@ -70,10 +70,10 @@ export function Venue() {
           </ul>
 
           <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3">
-            <a href={mapLink} target="_blank" rel="noreferrer" className="eyebrow border-b border-red pb-1 text-white hover:text-red-text">
+            <a href={mapLink} target="_blank" rel="noopener noreferrer" className="eyebrow inline-flex min-h-11 items-center border-b border-red text-white hover:text-red-text">
               Open in Google Maps →
             </a>
-            <a href={site.venue.website} target="_blank" rel="noreferrer" className="eyebrow border-b border-white/30 pb-1 text-white hover:border-red">
+            <a href={site.venue.website} target="_blank" rel="noopener noreferrer" className="eyebrow inline-flex min-h-11 items-center border-b border-white/30 text-white hover:border-red">
               suas.ac.in →
             </a>
           </div>

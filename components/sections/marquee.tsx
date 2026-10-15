@@ -15,10 +15,10 @@ export function Marquee() {
             {run.map((item, i) => (
               <span key={i} className="flex items-center">
                 <span
-                  className={`display px-6 text-[clamp(2rem,5vw,4.5rem)] md:px-10 ${
+                  className={`px-6 text-[clamp(2rem,5vw,4.5rem)] md:px-10 ${
                     item.startsWith("त")
-                      ? "font-deva text-gradient tracking-normal"
-                      : "uppercase text-transparent [-webkit-text-stroke:1px_rgb(255_255_255/0.55)]"
+                      ? "font-deva-display text-white"
+                      : "display uppercase text-transparent [-webkit-text-stroke:1px_rgb(255_255_255/0.55)]"
                   }`}
                 >
                   {item}

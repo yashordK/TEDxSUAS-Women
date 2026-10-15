@@ -7,6 +7,18 @@ export const site = {
   shortName: "TEDxSUAS Women",
   disclaimer: "x = independently organized TED event",
   license: "This independent TEDx event is operated under license from TED.",
+  tedxUrl: "https://www.ted.com/tedx",
+
+  // TEDx rules: the licensee and organisers are the event's sole organisers.
+  // TODO: confirm the licence holder's name with the organisers; hidden while it is TODO.
+  licensee: "TODO" as string,
+
+  // The speaker application form. TODO: set the real form URL; while it is "TODO",
+  // /speak shows a disabled "Applications opening soon" button.
+  applyUrl: "TODO" as string,
+
+  speakerRules:
+    "TEDx speakers are not paid. Talks cannot promote the speaker's or anyone else's products, books or businesses.",
 
   theme: {
     devanagari: "त्वमेव परिवर्तनम्",
@@ -56,13 +68,18 @@ export const site = {
     { label: "YouTube", href: "#" },
   ],
 
+  // TEDx rules: sponsors never appear on the homepage, only on /sponsors, with logos
+  // smaller than the TEDx logo. TODO: add confirmed sponsors here; empty hides the page link.
+  sponsors: [] as { name: string; logo: string; href?: string }[],
+
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
 } as const;
 
 export const nav = [
-  { label: "Theme", href: "/#theme" },
-  { label: "About", href: "/#about" },
-  { label: "Speakers", href: "/#speakers" },
-  { label: "Team", href: "/#team" },
-  { label: "Venue", href: "/#venue" },
-] as const;
+  { label: "Theme", href: "/theme" },
+  { label: "About", href: "/about" },
+  { label: "Speakers", href: "/speakers" },
+  { label: "Team", href: "/team" },
+  { label: "Venue", href: "/venue" },
+  ...(site.sponsors.length ? [{ label: "Sponsors", href: "/sponsors" }] : []),
+];

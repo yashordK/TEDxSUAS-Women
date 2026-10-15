@@ -17,7 +17,7 @@ const FAQS = [
   },
   {
     q: "Who can apply to speak?",
-    a: "Anyone with an original idea that fits the theme. Apply through the speaker form; the curation team reviews every application and will reach out to shortlisted speakers.",
+    a: `Anyone with an original idea that fits the theme. Apply through the speaker form; the curation team reviews every application and will reach out to shortlisted speakers. ${site.speakerRules}`,
   },
   {
     q: "How long are the talks?",

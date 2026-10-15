@@ -41,7 +41,7 @@ export function HeroShell() {
   const live = phase === "live";
 
   return (
-    <div id="top" className="relative flex min-h-svh flex-col overflow-x-clip bg-ink desk:h-svh desk:min-h-[640px] desk:overflow-hidden">
+    <div id="top" className="relative flex h-dvh min-h-dvh flex-col justify-between overflow-hidden bg-ink">
       {/* Stage: fixed and full-bleed behind the whole page at every size. */}
       <div className="fixed inset-0">
         {failed ? (
@@ -62,24 +62,21 @@ export function HeroShell() {
           aria-hidden
         />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-40 bg-gradient-to-t from-ink/90 to-transparent desk:block" aria-hidden />
+        {/* Narrow-screen scrims: top behind nav + title, bottom behind the copy and strip.
+            The middle stays clear so the mic and spotlight read. */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[36%] bg-gradient-to-b from-ink via-ink/85 to-transparent desk:hidden" aria-hidden />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[46%] bg-gradient-to-t from-ink via-ink/90 to-transparent desk:hidden" aria-hidden />
       </div>
 
-      {/* Nav + copy. On narrow screens a vertical scrim sits behind them and fades out
-          just below the buttons, so the stage rises out of the dark with no seam. */}
-      <div className="relative desk:flex desk:flex-1 desk:flex-col">
-        <div className="pointer-events-none absolute inset-0 bg-ink/90 desk:hidden" aria-hidden />
-        <div
-          className="pointer-events-none absolute inset-x-0 top-full h-28 bg-gradient-to-b from-ink/90 to-transparent sm:h-36 desk:hidden"
-          aria-hidden
-        />
+      {/* Nav + copy. On narrow screens the copy fills the screen: title at the top, the
+          stage in the middle, paragraph + buttons + strip pinned to the bottom. */}
+      <div className="relative flex min-h-0 flex-1 flex-col">
         <Nav />
-        <main className="relative px-[max(1.25rem,env(safe-area-inset-left))] pb-1 pt-7 sm:px-[max(2rem,env(safe-area-inset-left))] sm:pt-9 desk:flex desk:flex-1 desk:flex-col desk:justify-center desk:px-16 desk:pb-24 desk:pt-0">
+        <main className="relative flex min-h-0 flex-1 flex-col px-[max(1.25rem,env(safe-area-inset-left))] pt-[var(--hero-gap)] sm:px-[max(2rem,env(safe-area-inset-left))] desk:flex desk:min-h-0 desk:flex-1 desk:flex-col desk:justify-center desk:px-16 desk:py-[var(--hero-gap)]">
           <HeroCopy visible={live} reducedMotion={reducedMotion} />
         </main>
       </div>
 
-      {/* Narrow screens: the open space where the stage shows. */}
-      <div className="min-h-[22svh] flex-1 desk:hidden" aria-hidden />
 
       <BottomStrip />
 

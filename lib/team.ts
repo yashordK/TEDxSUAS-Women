@@ -1,6 +1,9 @@
 /**
  * Organising team. Add `photo: "/team/<file>.webp"` (put the file in public/team/)
  * to swap a monogram placeholder for a portrait.
+ *
+ * TEDx rules: the licensee and organisers are the sole organisers of the event, and
+ * no team member may also be a speaker or a sponsor of this event.
  */
 export type Member = { name: string; role?: string; photo?: string };
 

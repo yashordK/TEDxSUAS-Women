@@ -1,14 +1,16 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion, type Variants } from "framer-motion";
+import { site } from "@/lib/site";
+import { Arrow } from "@/components/ui/button";
 
 export interface HeroCopyProps {
   visible: boolean;
   reducedMotion: boolean;
 }
 
-const focus = "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-hot";
 
 /** Crops the black padding off tedx_logo.png (2172×724). */
 function Wordmark() {
@@ -45,18 +47,18 @@ export function HeroCopy({ visible, reducedMotion }: HeroCopyProps) {
 
   return (
     <motion.div
-      className="relative w-full sm:max-w-[60vw] desk:max-w-[36rem]"
+      className="relative flex min-h-0 w-full flex-1 flex-col desk:block desk:max-w-[36rem] desk:flex-none"
       variants={container}
       initial="hidden"
       animate={visible ? "show" : "hidden"}
     >
       {/* Title block: wordmark and SPEAKERS share one width and one right edge. */}
-      <div className="@container w-[88vw] max-w-[34rem] sm:w-full">
+      <div className="hero-title @container">
         <motion.h1 variants={item}>
           <Wordmark />
         </motion.h1>
 
-        <motion.div variants={item} className="mt-9 sm:mt-6">
+        <motion.div variants={item} className="mt-[var(--hero-gap)]">
           <p className="text-sm font-medium uppercase leading-[1.4] tracking-[0.6em] text-white sm:text-base" aria-hidden>
             Call for
           </p>
@@ -69,27 +71,34 @@ export function HeroCopy({ visible, reducedMotion }: HeroCopyProps) {
         </motion.div>
       </div>
 
-      <motion.div variants={item} className="mt-6 h-px w-14 bg-ted/40 sm:mt-8" aria-hidden />
+      {/* Phones: the stage shows through this gap, between the title and the bottom block. */}
+      <div className="min-h-0 flex-1 desk:hidden" aria-hidden />
 
-      <motion.p variants={item} className="mt-5 max-w-[22rem] text-[15px] font-normal leading-[1.65] text-[#bfb3b6] sm:mt-6 sm:max-w-[26rem] sm:text-[17px]">
-        TEDxSUAS Women is looking for voices with an idea worth spreading. If change starts with you, the stage is
-        waiting.
-      </motion.p>
+      <div data-hero-bottom className="sm:max-w-[60vw] desk:max-w-none">
+        <motion.div variants={item} className="mt-[var(--hero-gap)] hidden h-px w-14 bg-ted/40 desk:block" aria-hidden />
 
-      <motion.div variants={item} className="mt-7 grid grid-cols-2 gap-3 max-[359px]:grid-cols-1 sm:mt-9 sm:flex sm:flex-wrap">
-        <a
-          href="#apply"
-          className={`inline-flex min-h-12 items-center justify-center rounded-full bg-ted px-4 sm:px-7 text-sm font-semibold text-white shadow-[0_10px_40px_-10px_rgba(235,0,40,0.8)] transition hover:bg-[#ff0a35] ${focus}`}
+        <motion.p variants={item} className="hero-para max-w-[26rem] text-[15px] font-normal leading-[1.6] text-[#bfb3b6] desk:mt-[var(--hero-gap)] desk:text-[clamp(15px,2.1dvh,17px)] desk:leading-[1.65]">
+          TEDxSUAS Women is looking for voices with an idea worth spreading. If change starts with you, the stage is
+          waiting.
+        </motion.p>
+        <motion.p variants={item} className="hero-rules mt-2 max-w-[26rem] text-xs leading-[1.55] text-[#9d9195] desk:mt-3">
+          {site.speakerRules}
+        </motion.p>
+
+        <motion.div
+          variants={item}
+          className="mt-4 grid grid-cols-1 items-center gap-x-6 gap-y-1 sm:grid-cols-[auto_auto] sm:justify-start desk:mt-[var(--hero-gap)] desk:flex desk:flex-wrap"
         >
-          Apply to speak
-        </a>
-        <a
-          href="#theme"
-          className={`inline-flex min-h-12 items-center justify-center rounded-full border border-white/30 px-4 sm:px-7 text-sm font-semibold text-white transition hover:border-white hover:bg-white/5 ${focus}`}
-        >
-          Explore the theme
-        </a>
-      </motion.div>
+          <Link href="/speak" className="cta cta-primary w-full sm:w-auto">
+            <span className="relative z-10">Apply to speak</span>
+            <Arrow />
+          </Link>
+          <Link href="/theme" className="cta cta-link justify-self-center sm:justify-self-start">
+            <span className="cta-label">Explore the theme</span>
+            <Arrow />
+          </Link>
+        </motion.div>
+      </div>
     </motion.div>
   );
 }

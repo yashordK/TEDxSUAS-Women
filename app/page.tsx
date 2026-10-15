@@ -1,11 +1,13 @@
+import { pageMeta } from "@/lib/seo";
+import { site } from "@/lib/site";
 import { HeroShell } from "@/components/hero/HeroShell";
-import { Theme } from "@/components/sections/theme";
-import { Marquee } from "@/components/sections/marquee";
-import { About } from "@/components/sections/about";
-import { Speakers } from "@/components/sections/speakers";
-import { Team } from "@/components/sections/team";
-import { Venue } from "@/components/sections/venue";
-import { Faq } from "@/components/sections/faq";
+import { HomeTeasers } from "@/components/home/teasers";
+import { ClosingBand } from "@/components/closing-band";
+
+export const metadata = pageMeta({
+  description: `${site.theme.devanagari}: ${site.theme.tagline}. ${site.name} is looking for voices with an idea worth spreading. ${site.date.display}, ${site.venue.display}.`,
+  path: "/",
+});
 
 export default function Home() {
   return (
@@ -13,13 +15,8 @@ export default function Home() {
       <HeroShell />
       {/* Solid background so the hero's fixed 3D stage stays behind the hero only. */}
       <div id="content" className="relative z-10 bg-black">
-        <Theme />
-        <Marquee />
-        <About />
-        <Speakers />
-        <Team />
-        <Venue />
-        <Faq />
+        <HomeTeasers />
+        <ClosingBand />
       </div>
     </>
   );

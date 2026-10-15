@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { site } from "@/lib/site";
 import { coreLeadership, teams, type Member } from "@/lib/team";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { FadeIn } from "@/components/ui/reveal";
@@ -16,8 +17,18 @@ export function Team() {
     <section id="team" aria-labelledby="team-title" className="gutter relative border-t border-line py-28 md:py-40">
       <SectionHeading id="team-title" index="04" label="Organising Team" title="The people" accent="behind it." />
 
-      {/* Core leadership */}
+      {/* Licensee + organisers: the event's sole organisers (TEDx rules). */}
       <div className="mt-20 flex items-center gap-6">
+        <span className="eyebrow text-red-text">Licensee &amp; Organisers</span>
+        <span aria-hidden className="h-px flex-1 bg-line" />
+      </div>
+      <p className="mt-6 max-w-2xl text-grey">
+        {site.licensee !== "TODO" && <>Licensee: <span className="text-white">{site.licensee}</span>. </>}
+        Organised by {site.organisers.map((o) => o.name).join(" and ")}.
+      </p>
+
+      {/* Core leadership */}
+      <div className="mt-16 flex items-center gap-6">
         <span className="eyebrow text-red-text">Core Leadership</span>
         <span aria-hidden className="h-px flex-1 bg-line" />
       </div>

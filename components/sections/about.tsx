@@ -3,14 +3,15 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { FadeIn } from "@/components/ui/reveal";
 import { ReelEmbed } from "@/components/ui/reel-embed";
 
+// Official TED boilerplate (reference/tedxsuas-2026/CONTENT.md). Keep word for word.
 const BLOCKS = [
   {
     k: "TED",
-    body: "TED is a nonprofit devoted to spreading ideas, usually in the form of short, powerful talks of 18 minutes or less. It began in 1984 as a conference where Technology, Entertainment and Design converged, and today covers almost every topic, from science to business to global issues, in more than 100 languages.",
+    body: "TED is a non-profit devoted to spreading ideas, usually in the form of short, powerful talks (18 minutes or less). TED began in 1984 as a conference where Technology, Entertainment and Design converged, and today covers almost all topics — from science to business to global issues — in more than 100 languages. Meanwhile, independently run TEDx events help share ideas in communities around the world.",
   },
   {
     k: "TEDx",
-    body: "TEDx is a grassroots initiative created in the spirit of TED's mission to discover ideas worth spreading. TEDx events are organised independently by passionate people in their own communities, under a free license granted by TED, combining live speakers with recorded TED Talks to spark conversation where it matters most.",
+    body: "TEDx is a grassroots initiative, created in the spirit of TED's overall mission to research and discover \"ideas worth spreading.\" TEDx brings the spirit of TED to local communities around the globe via \"rules and tools\". TEDx events are organized by passionate individuals who seek to uncover new ideas and the latest research in their local areas and spark conversations in their communities. TEDx events include live speakers and recorded TED Talks, and are organized independently under a free license granted by TED. These events are not controlled by TED, but event organizers agree to abide by our format, and are offered guidelines for curation, speaker coaching, event organizing and more. They learn from us and from each other. More than 3000 events are now held annually.",
   },
 ];
 
