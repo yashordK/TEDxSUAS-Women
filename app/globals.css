@@ -573,109 +573,107 @@ html.has-custom-cursor select {
   outline-offset: 3px;
 }
 
-/* /theme hero: changemakers' names (components/sections/changemakers.tsx). */
-.names-backdrop {
+/* /theme hero names wall (components/sections/names-wall.tsx). */
+.nw {
   position: absolute;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
 }
-.names-set,
-.names-layer {
+/* right ~55%, fading to transparent toward the headline */
+.nw-wall {
   position: absolute;
-  inset: 0;
-  flex-direction: column;
-  justify-content: center;
-  gap: clamp(0.5rem, 2svh, 1.5rem);
+  inset: 0 0 0 45%;
+  overflow: hidden;
+  perspective: 900px;
+  /* fully clear over the headline's reach (~first third of the wall), full strength on the right */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 32%, #000 66%, #000 94%, transparent 100%),
+    linear-gradient(180deg, transparent 0%, #000 14%, #000 82%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, transparent 32%, #000 66%, #000 94%, transparent 100%),
+    linear-gradient(180deg, transparent 0%, #000 14%, #000 82%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
 }
-.names-layer {
-  display: flex;
+.nw-plane {
+  position: absolute;
+  top: -12%;
+  left: -10%;
+  width: 150%;
+  transform: rotateY(-10deg) rotateZ(-4deg);
+  transform-origin: 30% 50%;
 }
-.names-row {
+.nw-row {
+  margin: 0;
   white-space: nowrap;
-}
-.names-track {
-  display: flex;
-  width: max-content;
-  animation: names-drift 80s linear infinite;
-}
-.names-row-1 .names-track {
-  animation-duration: 70s;
-  animation-direction: reverse;
-}
-.names-row-2 .names-track {
-  animation-duration: 90s;
-}
-.names-track span {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(3rem, min(11vw, 17svh), 10rem);
-  line-height: 1;
-  color: transparent;
-  padding-right: 0.4em;
+  font-weight: 400;
+  font-size: clamp(1.35rem, min(2.6vw, 4.4svh), 2.6rem);
+  line-height: 1.55;
+  color: rgb(207 196 200 / 0.25);
 }
-@media (max-width: 639px) {
-  .names-track span {
-    font-size: clamp(3.5rem, 19vw, 5.5rem);
-  }
-  /* two rows: one above, one below the title block */
-  .names-layer {
-    justify-content: space-between;
-    padding: 20svh 0 30svh;
-  }
+.nw-sep {
+  color: rgb(207 196 200 / 0.18);
 }
-.names-faint .names-track span {
-  -webkit-text-stroke: 1px rgb(255 255 255 / 0.07);
+.nw-name {
+  transition: color 1.6s ease, text-shadow 1.6s ease;
 }
-.names-faint .names-row-1 .names-track span {
-  -webkit-text-stroke-color: rgb(235 0 40 / 0.08);
+.nw-name.nw-glow {
+  color: #eb0028;
+  text-shadow: 0 0 18px rgb(235 0 40 / 0.55), 0 0 42px rgb(235 0 40 / 0.3);
 }
-/* Bright copy, revealed only inside the moving spotlight. */
-.names-lit {
-  --sx: 70%;
-  -webkit-mask-image: radial-gradient(26vmax 22vmax at var(--sx) 50%, #000 0%, transparent 70%);
-  mask-image: radial-gradient(26vmax 22vmax at var(--sx) 50%, #000 0%, transparent 70%);
-  animation: names-spot-x 24s ease-in-out infinite alternate;
-}
-.names-lit .names-track span {
-  -webkit-text-stroke: 1px rgb(255 77 94 / 0.35);
-}
-.names-spot {
+/* beam from the top right */
+.nw-beam {
   position: absolute;
-  top: 50%;
-  left: 0;
-  width: 52vmax;
-  height: 44vmax;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(235 0 40 / 0.14), transparent);
-  transform: translate(calc(var(--sx, 70vw) - 50%), -50%);
-  animation: names-spot-move 24s ease-in-out infinite alternate;
+  top: -20%;
+  right: -10%;
+  width: 70%;
+  height: 120%;
+  background: radial-gradient(60% 55% at 85% 0%, rgb(235 0 40 / 0.32), rgb(235 0 40 / 0.1) 45%, transparent 72%);
+  transform: rotate(-18deg);
+  transform-origin: 85% 0%;
+  filter: blur(8px);
 }
-@property --sx {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 70%;
+/* dust: two layers of tiny specks drifting slowly inside the beam */
+.nw-dust {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 55%;
+  height: 100%;
+  background-image:
+    radial-gradient(1px 1px at 12% 22%, rgb(255 220 214 / 0.55), transparent),
+    radial-gradient(1px 1px at 38% 64%, rgb(255 220 214 / 0.4), transparent),
+    radial-gradient(1.5px 1.5px at 66% 30%, rgb(255 220 214 / 0.5), transparent),
+    radial-gradient(1px 1px at 82% 76%, rgb(255 220 214 / 0.35), transparent),
+    radial-gradient(1px 1px at 54% 12%, rgb(255 220 214 / 0.45), transparent),
+    radial-gradient(1.5px 1.5px at 24% 88%, rgb(255 220 214 / 0.3), transparent);
+  background-size: 320px 320px;
+  -webkit-mask-image: radial-gradient(70% 70% at 80% 0%, #000, transparent 75%);
+  mask-image: radial-gradient(70% 70% at 80% 0%, #000, transparent 75%);
+  opacity: 0.7;
+  animation: nw-dust 40s linear infinite;
 }
-@keyframes names-drift {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-50%, 0, 0); }
+@keyframes nw-dust {
+  from { background-position: 0 0; }
+  to { background-position: -120px 320px; }
 }
-@keyframes names-spot-x {
-  from { --sx: 38%; }
-  to { --sx: 92%; }
-}
-@keyframes names-spot-move {
-  from { transform: translate(calc(38vw - 50%), -50%); }
-  to { transform: translate(calc(92vw - 50%), -50%); }
+@media (max-width: 1023px) {
+  /* tablet and phone: the wall sits above the headline, faded away from the text */
+  .nw-wall {
+    inset: 0;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 60%), linear-gradient(180deg, transparent 0%, #000 10%, #000 34%, transparent 46%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 60%), linear-gradient(180deg, transparent 0%, #000 10%, #000 34%, transparent 46%);
+  }
+  .nw-row {
+    font-size: clamp(1.25rem, 3.6vw, 1.9rem);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .names-track,
-  .names-lit,
-  .names-spot {
+  .nw-dust {
     animation: none;
   }
-  .names-spot {
-    transform: translate(calc(70vw - 50%), -50%);
+  .nw-name {
+    transition: none;
   }
 }
 

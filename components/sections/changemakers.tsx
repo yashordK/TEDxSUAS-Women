@@ -2,60 +2,8 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 import { FadeIn } from "@/components/ui/reveal";
 
-const names = site.changemakers.map((c) => c.name);
-
-/** Split the names into `n` rows, rotated so neighbouring rows don't start alike. */
-function rows(n: number) {
-  return Array.from({ length: n }, (_, r) => {
-    const k = Math.round((names.length / n) * r);
-    return [...names.slice(k), ...names.slice(0, k)];
-  });
-}
-
-function Row({ list, i }: { list: string[]; i: number }) {
-  // Two identical halves; the track slides by -50% for a seamless loop.
-  const half = list.join("  ·  ") + "  ·  ";
-  return (
-    <div className={`names-row names-row-${i}`}>
-      <div className="names-track">
-        <span>{half}</span>
-        <span>{half}</span>
-      </div>
-    </div>
-  );
-}
-
-/**
- * /theme hero backdrop: the changemakers' names in huge outlined type, rows drifting in
- * opposite directions. A brighter copy of the same rows is masked to a slowly moving
- * spotlight, so whichever name the light passes over brightens. Decoration only.
- */
-export function NamesBackdrop() {
-  const desktop = rows(3);
-  const phone = rows(2);
-  const layer = (list: string[][], cls: string) => (
-    <div className={`names-layer ${cls}`}>
-      {list.map((l, i) => (
-        <Row key={i} list={l} i={i} />
-      ))}
-    </div>
-  );
-  return (
-    <div aria-hidden className="names-backdrop">
-      <div className="names-set hidden sm:flex">
-        {layer(desktop, "names-faint")}
-        {layer(desktop, "names-lit")}
-      </div>
-      <div className="names-set flex sm:hidden">
-        {layer(phone, "names-faint")}
-        {layer(phone, "names-lit")}
-      </div>
-      <span className="names-spot" />
-      {/* keep the title side darker */}
-      <span className="absolute inset-0 bg-[linear-gradient(90deg,rgb(5_3_4/0.85),rgb(5_3_4/0.35)_55%,transparent_80%)]" />
-    </div>
-  );
-}
+// Only entries with a vetted one-liner appear in the list.
+const listed = site.changemakers.filter((c): c is { name: string; line: string } => !!c.line);
 
 /** "Change always begins with one.": one row per changemaker. */
 export function Changemakers() {
@@ -67,7 +15,7 @@ export function Changemakers() {
         </h2>
       </FadeIn>
       <ol className="mt-10">
-        {site.changemakers.map((c, i) => (
+        {listed.map((c, i) => (
           <li key={c.name}>
             <FadeIn delay={(i % 6) * 0.05}>
               {/* tabIndex: keyboard users can focus a row to reveal its line */}
