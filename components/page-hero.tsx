@@ -21,16 +21,13 @@ export function PageHero({
   mobileImage,
   mobilePosition,
   imageShift,
-  backdrop,
-  imageFilter,
 }: {
   eyebrow: string;
   title: string;
   /** trailing word(s) in #EB0028 */
   accent?: string;
   intro: string;
-  /** Background photo. Omit when passing `backdrop` instead. */
-  image?: string;
+  image: string;
   imagePosition?: string;
   /** Optional art-directed crop for phones (below 640px). */
   mobileImage?: string;
@@ -38,10 +35,6 @@ export function PageHero({
   mobilePosition?: string;
   /** Push the photo down (CSS length), e.g. to keep a stage clear of the nav. */
   imageShift?: string;
-  /** Custom decorative layer instead of a photo (e.g. /theme's names). Must be aria-hidden. */
-  backdrop?: React.ReactNode;
-  /** CSS filter on the photo, e.g. "blur(2.5px) brightness(0.7)" to turn it into texture. */
-  imageFilter?: string;
 }) {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
@@ -50,7 +43,7 @@ export function PageHero({
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "8%"]);
 
   const common = { alt: "", fill: true, priority: true, sizes: "100vw" } as const;
-  const desktop = image ? getImageProps({ ...common, src: image }).props : null;
+  const desktop = getImageProps({ ...common, src: image }).props;
   const mobile = mobileImage ? getImageProps({ ...common, src: mobileImage }).props : null;
   const pos = {
     "--hero-pos": imagePosition,
@@ -76,16 +69,13 @@ export function PageHero({
       className="image-hero relative isolate flex flex-col overflow-hidden bg-[#050304]"
     >
       {/* 1. image + red grade + fades. Oversized so the parallax never shows an edge. */}
-      {desktop && (
-        <motion.div aria-hidden style={reduce ? undefined : { y }} className="absolute inset-x-0 -inset-y-[10%]">
-          <picture>
-            {mobile && <source media="(max-width: 639px)" srcSet={mobile.srcSet} sizes={mobile.sizes} />}
-            {/* art-directed <picture>; src/srcSet come from getImageProps */}
-            <img {...desktop} alt="" className="image-hero-img object-cover" style={{ ...desktop.style, ...pos, ...(imageFilter ? { filter: imageFilter } : {}) }} />
-          </picture>
-        </motion.div>
-      )}
-      {backdrop}
+      <motion.div aria-hidden style={reduce ? undefined : { y }} className="absolute inset-x-0 -inset-y-[10%]">
+        <picture>
+          {mobile && <source media="(max-width: 639px)" srcSet={mobile.srcSet} sizes={mobile.sizes} />}
+          {/* art-directed <picture>; src/srcSet come from getImageProps */}
+          <img {...desktop} alt="" className="image-hero-img object-cover" style={{ ...desktop.style, ...pos }} />
+        </picture>
+      </motion.div>
       <span
         aria-hidden
         className="absolute inset-0 bg-[linear-gradient(180deg,rgb(5_3_4/0.85)_0px,transparent_160px),linear-gradient(180deg,transparent_55%,#050304_100%)]"
@@ -95,7 +85,7 @@ export function PageHero({
       <span aria-hidden className="grain absolute inset-0 opacity-[0.08] [mask-image:linear-gradient(180deg,#000_55%,transparent_92%)]" />
 
       {/* 3. beam + haze (hidden on phones); each fades out well inside the hero */}
-      <span aria-hidden className={`image-hero-fx pointer-events-none absolute inset-0 ${backdrop ? "hidden" : "hidden sm:block"}`}>
+      <span aria-hidden className="image-hero-fx pointer-events-none absolute inset-0 hidden sm:block">
         <span className="image-hero-beam" />
         <span className="image-hero-haze left-[8%] top-[30%]" />
         <span className="image-hero-haze image-hero-haze-2 right-[10%] top-[45%]" />
