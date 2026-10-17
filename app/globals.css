@@ -573,6 +573,146 @@ html.has-custom-cursor select {
   outline-offset: 3px;
 }
 
+/* /theme hero: changemakers' names (components/sections/changemakers.tsx). */
+.names-backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.names-set,
+.names-layer {
+  position: absolute;
+  inset: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(0.5rem, 2svh, 1.5rem);
+}
+.names-layer {
+  display: flex;
+}
+.names-row {
+  white-space: nowrap;
+}
+.names-track {
+  display: flex;
+  width: max-content;
+  animation: names-drift 80s linear infinite;
+}
+.names-row-1 .names-track {
+  animation-duration: 70s;
+  animation-direction: reverse;
+}
+.names-row-2 .names-track {
+  animation-duration: 90s;
+}
+.names-track span {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(3rem, min(11vw, 17svh), 10rem);
+  line-height: 1;
+  color: transparent;
+  padding-right: 0.4em;
+}
+@media (max-width: 639px) {
+  .names-track span {
+    font-size: clamp(3.5rem, 19vw, 5.5rem);
+  }
+  /* two rows: one above, one below the title block */
+  .names-layer {
+    justify-content: space-between;
+    padding: 20svh 0 30svh;
+  }
+}
+.names-faint .names-track span {
+  -webkit-text-stroke: 1px rgb(255 255 255 / 0.07);
+}
+.names-faint .names-row-1 .names-track span {
+  -webkit-text-stroke-color: rgb(235 0 40 / 0.08);
+}
+/* Bright copy, revealed only inside the moving spotlight. */
+.names-lit {
+  --sx: 70%;
+  -webkit-mask-image: radial-gradient(26vmax 22vmax at var(--sx) 50%, #000 0%, transparent 70%);
+  mask-image: radial-gradient(26vmax 22vmax at var(--sx) 50%, #000 0%, transparent 70%);
+  animation: names-spot-x 24s ease-in-out infinite alternate;
+}
+.names-lit .names-track span {
+  -webkit-text-stroke: 1px rgb(255 77 94 / 0.35);
+}
+.names-spot {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 52vmax;
+  height: 44vmax;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(235 0 40 / 0.14), transparent);
+  transform: translate(calc(var(--sx, 70vw) - 50%), -50%);
+  animation: names-spot-move 24s ease-in-out infinite alternate;
+}
+@property --sx {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 70%;
+}
+@keyframes names-drift {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+@keyframes names-spot-x {
+  from { --sx: 38%; }
+  to { --sx: 92%; }
+}
+@keyframes names-spot-move {
+  from { transform: translate(calc(38vw - 50%), -50%); }
+  to { transform: translate(calc(92vw - 50%), -50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .names-track,
+  .names-lit,
+  .names-spot {
+    animation: none;
+  }
+  .names-spot {
+    transform: translate(calc(70vw - 50%), -50%);
+  }
+}
+
+/* /theme changemaker rows: line reveals on hover/focus where a pointer can hover. */
+.cm-num {
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(235 0 40 / 0.8);
+  transition: color 0.35s var(--ease-out-expo);
+}
+.cm-line {
+  transition: opacity 0.35s var(--ease-out-expo), transform 0.35s var(--ease-out-expo);
+}
+@media (hover: hover) and (pointer: fine) {
+  .cm-line {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  .cm-row:hover .cm-line,
+  .cm-row:focus-visible .cm-line {
+    opacity: 1;
+    transform: none;
+  }
+  .cm-row:hover .cm-num,
+  .cm-row:focus-visible .cm-num {
+    color: #eb0028;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cm-line,
+  .cm-num {
+    transition: none;
+  }
+  .cm-line {
+    transform: none !important;
+  }
+}
+
 /* Home: podium cards (components/home/teasers.tsx). The cone stays inside the card. */
 .podium-card {
   position: relative;

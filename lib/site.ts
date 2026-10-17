@@ -90,6 +90,21 @@ export const site = {
     { n: "07", title: "Fashion", sub: "Beyond Clothing", line: "Fashion as a lens for identity, culture, confidence and innovation." },
     { n: "08", title: "Science & Innovation", sub: "Women Driving Discovery", line: "Highlighting women researchers, scientists and innovators shaping the future." },
   ],
+  // Women who changed things, for /theme. Facts to be double-checked by organisers before launch.
+  changemakers: [
+    { name: "Savitribai Phule", line: "Opened one of India's first schools for girls in Pune, 1848." },
+    { name: "Fatima Sheikh", line: "Co-educator who opened that school in her home." },
+    { name: "Anandibai Joshi", line: "One of the first Indian women to earn a Western medical degree, 1886." },
+    { name: "Kalpana Chawla", line: "First woman of Indian origin in space, 1997." },
+    { name: "Sarojini Naidu", line: "Poet, and the first woman governor of an Indian state." },
+    { name: "Kamaladevi Chattopadhyay", line: "Revived India's handloom and craft traditions." },
+    { name: "Marie Curie", line: "First woman to win a Nobel Prize, and in two sciences." },
+    { name: "Rosa Parks", line: "Refused to give up her bus seat in 1955." },
+    { name: "Ada Lovelace", line: "Wrote the first published algorithm for a machine." },
+    { name: "Wangari Maathai", line: "First African woman to win the Nobel Peace Prize, 2004." },
+    { name: "Rosalind Franklin", line: "Her X-ray work revealed the structure of DNA." },
+  ],
+
   directionTags: ["Personal stories", "Creative expression", "Scientific innovation", "Practical knowledge", "Social issues"],
 
   // TEDx rules: sponsors never appear on the homepage, only on /sponsors, with logos

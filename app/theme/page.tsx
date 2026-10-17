@@ -2,6 +2,7 @@ import { pageMeta } from "@/lib/seo";
 import { site } from "@/lib/site";
 import { PageHero } from "@/components/page-hero";
 import { Theme } from "@/components/sections/theme";
+import { Changemakers, NamesBackdrop } from "@/components/sections/changemakers";
 
 export const metadata = pageMeta({
   title: "Theme",
@@ -18,12 +19,10 @@ export default function ThemePage() {
         title="You are"
         accent="the change."
         intro={`${first} ${second}: three Sanskrit words, one idea. Change does not wait for someone else.`}
-        image="/images/theme-hero.webp"
-        imagePosition="right center"
-        // phones see ~a third of the wide mosaic: anchor on the curtain + mic tiles
-        mobilePosition="92% center"
+        backdrop={<NamesBackdrop />}
       />
       <Theme />
+      <Changemakers />
     </main>
   );
 }
