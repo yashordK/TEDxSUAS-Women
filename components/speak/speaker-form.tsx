@@ -132,8 +132,13 @@ export function SpeakerForm() {
       const r = STEPS[i].schema.safeParse(getValues());
       clearErrors(stepKeys(i));
       if (r.success) return true;
+      // First problem per field wins (e.g. "paste a full link" before "use https").
+      const seen = new Set<string>();
       for (const issue of r.error.issues) {
-        setError(String(issue.path[0]) as Key, { message: issue.message });
+        const key = String(issue.path[0]);
+        if (seen.has(key)) continue;
+        seen.add(key);
+        setError(key as Key, { message: issue.message });
       }
       if (focus) {
         window.setTimeout(() => {

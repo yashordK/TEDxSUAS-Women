@@ -11,10 +11,14 @@ export type SubmitResult =
   | { ok: false; error: string; fieldErrors?: Record<string, string> };
 
 export async function submitSpeakerApplication(input: unknown): Promise<SubmitResult> {
+  // Honeypot filled: pretend success so bots learn nothing, and store nothing.
+  const honeypot = (input as { website?: unknown } | null)?.website;
+  if (typeof honeypot === "string" && honeypot.trim() !== "") {
+    return { ok: true, refCode: "TXSW-27-0000" };
+  }
+
   const parsed = speakerApplicationSchema.safeParse(input);
   if (!parsed.success) {
-    // Honeypot filled: pretend success so bots learn nothing.
-    if (parsed.error.issues.some((i) => i.path[0] === "website")) return { ok: true, refCode: "TXSW-27-0000" };
     const fieldErrors: Record<string, string> = {};
     for (const i of parsed.error.issues) fieldErrors[String(i.path[0])] ??= i.message;
     return { ok: false, error: "Some answers need another look.", fieldErrors };

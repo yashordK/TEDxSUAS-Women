@@ -114,8 +114,9 @@ export const experienceSchema = z
 export const consentSchema = z.object({
   consentOriginal: z.literal(true, { message: "Please confirm this is your original idea" }),
   consentContact: z.literal(true, { message: "Please confirm we can contact you" }),
-  // honeypot: real people never see or fill this
-  website: z.string().max(0).optional().or(z.literal("")),
+  // Honeypot: checked on the server only (actions.ts), so autofill can never
+  // silently block a real person in the browser.
+  website: z.string().max(500).optional(),
 });
 
 /* ----------------------------- Combined ----------------------------- */

@@ -36,10 +36,10 @@ export function Team() {
         <span className="eyebrow text-red-text">Teams</span>
         <span aria-hidden className="h-px flex-1 bg-line" />
       </div>
-      <ul className="mt-10 grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="mt-10 grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-4">
         {teams.map((t, i) => (
           <li key={t.name} className="bg-black">
-            <FadeIn delay={(i % 3) * 0.08} className="h-full">
+            <FadeIn delay={(i % 4) * 0.08} className="h-full">
               <div className="group h-full p-8 transition-colors duration-700 hover:bg-[radial-gradient(ellipse_at_top_left,rgb(235_0_40/0.12),transparent_60%)] md:p-10">
                 <span className="flex size-14 items-center justify-center rounded-full border border-red text-red-text transition-transform duration-500 ease-out-expo group-hover:scale-110">
                   {TEAM_ICONS[t.name] ?? TEAM_ICONS.default}
@@ -107,18 +107,6 @@ const TEAM_ICONS: Record<string, React.ReactNode> = {
   "Communication, Editorial & Marketing": (
     <svg viewBox="0 0 24 24" className={ic} {...stroke} aria-hidden>
       <path d="M3 10v4h3l6 4V6L6 10H3ZM16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12" />
-    </svg>
-  ),
-  "Video Production & Design": (
-    <svg viewBox="0 0 24 24" className={ic} {...stroke} aria-hidden>
-      <rect x="3" y="8" width="18" height="12" rx="1.5" />
-      <path d="m3 8 2.5-4h13L21 8M10 11.5v5l4.5-2.5z" />
-    </svg>
-  ),
-  "Design, AV & Production": (
-    <svg viewBox="0 0 24 24" className={ic} {...stroke} aria-hidden>
-      <rect x="3" y="4" width="18" height="12" rx="1.5" />
-      <path d="M8 20h8M12 16v4M9 12l6-6" />
     </svg>
   ),
   "Event Manager": (
