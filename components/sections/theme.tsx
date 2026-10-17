@@ -1,6 +1,6 @@
 import { site } from "@/lib/site";
-import { SectionHeading } from "@/components/ui/section-heading";
 import { FadeIn, Hairline, SplitReveal } from "@/components/ui/reveal";
+import { ThemeWords } from "@/components/brand/theme-words";
 
 const WORDS = [
   { deva: "त्वम्", roman: "tvam", gloss: "you" },
@@ -31,40 +31,30 @@ const PILLARS = [
 
 export function Theme() {
   return (
-    <section id="theme" aria-labelledby="theme-title" className="gutter relative py-28 md:py-40">
-      <div className="grid gap-16 lg:grid-cols-12">
-        <SectionHeading
-          id="theme-title"
-          index="01"
-          label="The Theme"
-          title="You are"
-          accent="the change."
-          className="lg:col-span-7"
-        />
-
-        {/* Sanskrit, word by word */}
-        <FadeIn className="lg:col-span-5 lg:pt-24">
-          <p lang="sa" className="font-deva text-gradient text-[clamp(2.25rem,5vw,3.75rem)] font-extrabold leading-none">
-            {site.theme.devanagari}
-          </p>
-          <p className="eyebrow mt-4 text-grey">{site.theme.transliteration}</p>
-          <dl className="mt-10 divide-y divide-line border-y border-line">
-            {WORDS.map((w) => (
-              <div key={w.roman} className="grid grid-cols-[6.5rem_1fr] items-baseline gap-4 py-4 md:grid-cols-[9rem_1fr]">
-                <dt>
-                  <span lang="sa" className="font-deva block text-xl text-white">{w.deva}</span>
-                  <span className="text-xs italic text-grey">{w.roman}</span>
-                </dt>
-                <dd className="text-grey">{w.gloss}</dd>
-              </div>
-            ))}
-          </dl>
-        </FadeIn>
-      </div>
+    <section id="theme" aria-label="The theme, word by word" className="gutter relative py-[clamp(48px,7vw,96px)]">
+      {/* Sanskrit, word by word: art left, meanings right (stacked below lg) */}
+      <FadeIn className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12">
+        <div className="lg:col-span-7">
+          <ThemeWords className="-ml-[2%]" widthClass="w-[clamp(280px,62vw,860px)] lg:w-full" />
+          {/* the art carries the words visually; screen readers also get the transliteration */}
+          <p className="sr-only">{site.theme.transliteration}</p>
+        </div>
+        <dl className="grid border-y border-line sm:grid-cols-3 sm:divide-x sm:divide-line lg:col-span-5 lg:grid-cols-1 lg:divide-x-0 lg:divide-y">
+          {WORDS.map((w) => (
+            <div key={w.roman} className="border-b border-line py-5 last:border-b-0 sm:border-b-0 sm:px-6 sm:first:pl-0 lg:grid lg:grid-cols-[9rem_1fr] lg:items-baseline lg:gap-4 lg:px-0 lg:py-4">
+              <dt>
+                <span lang="sa" className="font-deva block text-2xl font-semibold text-white">{w.deva}</span>
+                <span className="text-sm italic text-grey">{w.roman}</span>
+              </dt>
+              <dd className="mt-2 text-white/90 lg:mt-0">{w.gloss}</dd>
+            </div>
+          ))}
+        </dl>
+      </FadeIn>
 
       {/* Essay */}
-      <div className="mt-24 grid gap-12 md:mt-32 lg:grid-cols-12">
-        <div className="space-y-6 text-lg leading-relaxed text-grey lg:col-span-6 lg:col-start-2">
+      <div className="mt-[clamp(48px,7vw,96px)] grid gap-12 lg:grid-cols-12">
+        <div className="space-y-6 text-[18px] leading-[1.65] text-grey lg:col-span-7">
           <FadeIn>
             <p>
               There is an old habit of waiting. Waiting for the right moment, the right permission,
@@ -100,7 +90,7 @@ export function Theme() {
       </div>
 
       {/* Pillars */}
-      <ul className="mt-28 grid gap-px bg-line md:mt-36 md:grid-cols-3">
+      <ul className="mt-[clamp(48px,7vw,96px)] grid gap-px bg-line lg:grid-cols-3">
         {PILLARS.map((p, i) => (
           <li key={p.name} className="bg-black">
             <FadeIn delay={i * 0.1} className="h-full">
@@ -110,8 +100,9 @@ export function Theme() {
                   aria-hidden
                   className="pointer-events-none absolute -bottom-1/2 left-1/2 h-full w-[120%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(closest-side,rgb(235_0_40/0.35),transparent)] opacity-0 transition-opacity duration-700 group-hover:opacity-100"
                 />
+                <span aria-hidden className="absolute inset-x-0 top-0 h-px bg-red" />
                 <p className="eyebrow relative text-red-text">{p.n}</p>
-                <h3 className="display relative mt-16 text-5xl uppercase md:mt-24 md:text-6xl">{p.name}</h3>
+                <h3 className="display relative mt-10 text-[clamp(2.5rem,5vw,4.5rem)] uppercase md:mt-16">{p.name}</h3>
                 <p className="relative mt-4 font-medium text-white">{p.line}</p>
                 <p className="relative mt-4 text-grey">{p.body}</p>
               </article>

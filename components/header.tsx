@@ -15,7 +15,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
-  useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 40));
+  useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 24));
 
   useEffect(() => setOpen(false), [pathname]);
   useEffect(() => {
@@ -35,12 +35,12 @@ export function Header() {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-700 ${
+        className={`fixed inset-x-0 top-0 z-50 border-b transition-[background-color,border-color,backdrop-filter] duration-200 ${
           open
-            ? "border-b border-line bg-black"
+            ? "border-white/8 bg-[#050304]"
             : scrolled
-              ? "border-b border-line bg-black/70 backdrop-blur-xl"
-              : "border-b border-transparent"
+              ? "border-white/8 bg-[rgb(5_3_4/0.82)] backdrop-blur-[14px]"
+              : "border-transparent"
         }`}
       >
         <div className="gutter flex h-20 items-center justify-between md:h-24">
@@ -56,16 +56,14 @@ export function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="eyebrow relative text-white/75 transition-colors hover:text-white after:absolute after:-bottom-1.5 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-red after:transition-transform after:duration-500 hover:after:scale-x-100"
+                aria-current={pathname.startsWith(item.href) ? "page" : undefined}
+                className="eyebrow relative flex min-h-11 items-center text-white/85 transition-colors hover:text-white aria-[current=page]:text-white after:absolute after:bottom-2 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-red after:transition-transform after:duration-500 hover:after:scale-x-100 aria-[current=page]:after:scale-x-100"
               >
                 {item.label}
               </Link>
             ))}
-            <Link
-              href="/speak"
-              className="eyebrow border border-red bg-red px-5 py-2.5 text-white transition-colors duration-500 hover:bg-transparent"
-            >
-              Apply to Speak
+            <Link href="/speak" aria-current={pathname === "/speak" ? "page" : undefined} className="cta cta-outline">
+              Apply to speak
             </Link>
           </nav>
 
@@ -74,7 +72,7 @@ export function Header() {
             onClick={() => setOpen((o) => !o)}
             aria-expanded={open}
             aria-controls="mobile-menu"
-            className="eyebrow flex items-center gap-3 py-2 text-white lg:hidden"
+            className="eyebrow flex min-h-11 items-center gap-3 py-2 text-white lg:hidden"
           >
             {open ? "Close" : "Menu"}
             <span aria-hidden className="relative block h-3 w-6">
@@ -108,6 +106,7 @@ export function Header() {
                   <Link
                     href={item.href}
                     onClick={() => setOpen(false)}
+                    aria-current={pathname === item.href ? "page" : undefined}
                     className={`display flex items-baseline justify-between py-4 text-4xl ${item.href === "/speak" ? "text-red-text" : "text-white"}`}
                   >
                     {item.label}

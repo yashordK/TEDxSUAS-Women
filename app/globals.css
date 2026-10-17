@@ -12,7 +12,7 @@
   --red-deep: #a8001c;
   --red-text: #ff4d5e; /* lighter red for body-size text: 6.5:1 on black */
   --white: #ffffff;
-  --grey: #8a8a8a; /* 6.1:1 on black */
+  --grey: #cfc4c8; /* readable body text: 12:1 on black */
   --grey-dim: #5a5a5a; /* decorative only, never for text */
   --line: rgb(255 255 255 / 0.12);
 
@@ -39,7 +39,6 @@
 
   --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-playfair), Georgia, serif;
-  --font-deva: var(--font-mukta), var(--font-montserrat), sans-serif;
 
   --ease-out-expo: var(--ease-out-expo);
 }
@@ -55,13 +54,24 @@ html {
 
 body {
   background: var(--black);
-  color: var(--white);
+  color: var(--grey);
   font-family: var(--font-sans);
-  line-height: 1.6;
+  font-size: 16px;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   overflow-x: clip;
+}
+
+/* Headings stay white; body copy is the softer --grey. Layered so utilities win. */
+@layer base {
+  h1,
+  h2,
+  h3,
+  .display {
+    color: var(--white);
+  }
 }
 
 ::selection {
@@ -124,8 +134,9 @@ html.has-custom-cursor select {
   -webkit-text-fill-color: transparent;
 }
 
+/* Side padding that also caps content at 1200px wide. */
 @utility gutter {
-  padding-inline: var(--gutter);
+  padding-inline: max(var(--gutter), calc((100% - 1200px) / 2));
 }
 
 @utility hairline {
@@ -140,6 +151,602 @@ html.has-custom-cursor select {
   line-height: 1;
 }
 
+/* Devanagari, by size. Line-height 1.3 keeps matras from clipping. */
+@utility font-deva-display {
+  font-family: var(--font-deva-display), var(--font-devanagari), serif;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+
+@utility font-deva {
+  font-family: var(--font-devanagari), var(--font-montserrat), sans-serif;
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+
+/* ------------------------------------------------------------------
+   Hero: one screen at every size. The title block (wordmark + SPEAKERS, sized in cqw)
+   takes min(width cap, height budget), so the whole stack scales with min(w, h).
+   Height budget ≈ 2 × (viewport − nav, strip, paragraph, buttons and gaps).
+   ------------------------------------------------------------------ */
+:root {
+  --hero-gap: clamp(0.875rem, 3dvh, 2.25rem);
+  --hero-fixed: 430px;
+}
+.hero-title {
+  width: min(74vw, 34rem, calc((100dvh - var(--hero-fixed)) * 2));
+}
+@media (min-width: 640px) {
+  .hero-title {
+    width: min(100%, 34rem, calc((100dvh - var(--hero-fixed)) * 2));
+  }
+}
+@media (max-height: 760px) {
+  :root {
+    --hero-gap: clamp(0.5rem, 2.2dvh, 1.25rem);
+    --hero-fixed: 400px;
+  }
+}
+/* Below 640px tall the paragraph and rules note go, so the buttons always fit. */
+@media (max-height: 640px) {
+  :root {
+    --hero-fixed: 270px;
+  }
+  .hero-para,
+  .hero-rules {
+    display: none;
+  }
+}
+@media (max-height: 520px) {
+  :root {
+    --hero-fixed: 230px;
+  }
+  .hero-strip-date {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------
+   CTAs. Shared by the hero, the hero nav and components/ui/button.tsx.
+   ------------------------------------------------------------------ */
+.cta {
+  position: relative;
+  display: inline-flex;
+  min-height: 52px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  overflow: hidden;
+  padding-inline: 1.75rem;
+  border-radius: 4px;
+  font-family: var(--font-montserrat), sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+.cta:focus-visible {
+  outline: 2px solid #ff3b55;
+  outline-offset: 4px;
+}
+.cta-arrow {
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+  transition: transform 0.35s var(--ease-out-expo);
+}
+.cta:hover .cta-arrow {
+  transform: translateX(4px);
+}
+
+.cta-primary {
+  background: #eb0028;
+  box-shadow: 0 10px 36px -12px rgb(235 0 40 / 0.8), 0 0 28px -8px rgb(235 0 40 / 0.55);
+}
+.cta-primary:hover {
+  background: #ff0a35;
+}
+/* One diagonal light sweep per hover. */
+.cta-primary::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: -60%;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.2), transparent);
+  transform: skewX(-20deg);
+  opacity: 0;
+  pointer-events: none;
+}
+.cta-primary:hover::after {
+  animation: cta-sweep 0.8s var(--ease-out-expo) 1;
+}
+@keyframes cta-sweep {
+  from { left: -60%; opacity: 1; }
+  to { left: 120%; opacity: 1; }
+}
+
+/* Text link: a red underline under the label grows to full width on hover. */
+.cta-link {
+  min-height: 44px;
+  padding-inline: 0.25rem;
+  border-radius: 0;
+}
+.cta-link .cta-label {
+  position: relative;
+  padding-block: 0.375rem;
+}
+.cta-link .cta-label::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1px;
+  width: 2.5rem;
+  background: #eb0028;
+  transition: width 0.4s var(--ease-out-expo);
+}
+.cta-link:hover {
+  color: #ff3b55;
+}
+.cta-link:hover .cta-label::after {
+  width: 100%;
+}
+.cta-link:hover .cta-arrow {
+  transform: translateY(3px);
+}
+
+/* Nav: small outlined primary. */
+.cta-outline {
+  min-height: 44px;
+  padding-inline: 1.25rem;
+  font-size: 12px;
+  border: 1px solid #eb0028;
+  border-radius: 0;
+}
+.cta-outline:hover {
+  background: #eb0028;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta,
+  .cta-arrow,
+  .cta-link .cta-label::after {
+    transition: none;
+  }
+  .cta:hover .cta-arrow,
+  .cta-link:hover .cta-arrow {
+    transform: none;
+  }
+  .cta-primary:hover::after {
+    animation: none;
+  }
+}
+
+@media (min-width: 640px) {
+  body {
+    font-size: 17px;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Inner-page hero cone (page-hero.tsx) and /speakers podiums (podiums.tsx)
+   ------------------------------------------------------------------ */
+/* Spotlight cone over each inner page title. */
+.spot-cone {
+  position: absolute;
+  inset: 0 0 auto 50%;
+  z-index: -1;
+  height: 100%;
+  width: min(90vw, 760px);
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, rgb(255 236 228 / 0.12), rgb(235 0 40 / 0.05) 70%, transparent);
+  clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
+  pointer-events: none;
+}
+@media (min-width: 1024px) {
+  .spot-cone {
+    left: 30%;
+  }
+}
+
+/* /speakers lineup placeholders (components/sections/lineup.tsx). Everything stays inside. */
+.lineup-podium {
+  position: relative;
+  display: flex;
+  aspect-ratio: 3 / 2.8; /* ~30% shorter than the original 3:4 */
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+  padding-bottom: clamp(1rem, 2.2vw, 1.75rem);
+  border: 1px solid rgb(235 0 40 / 0.4);
+  background: #080405;
+  text-align: center;
+  transition: border-color 0.4s var(--ease-out-expo);
+}
+.lineup-podium-tall {
+  aspect-ratio: 3 / 3.22; /* ~15% taller than the sides */
+}
+/* Beam: a trapezoid falling from the top centre, #EB0028 ~35% fading out. */
+.lineup-beam {
+  position: absolute;
+  inset: 0 0 12%;
+  background: linear-gradient(180deg, rgb(235 0 40 / 0.35), rgb(235 0 40 / 0.12) 60%, transparent);
+  clip-path: polygon(40% 0, 60% 0, 88% 100%, 12% 100%);
+  filter: blur(6px);
+  animation: lineup-pulse 6s ease-in-out infinite;
+  animation-delay: var(--pulse-delay, 0s);
+  transition: filter 0.4s var(--ease-out-expo);
+  pointer-events: none;
+}
+/* Pool: soft red ellipse where the beam lands, around the mic mark. */
+.lineup-pool {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: 4%;
+  height: 34%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(235 0 40 / 0.38), rgb(235 0 40 / 0.12) 60%, transparent);
+  animation: lineup-pulse 6s ease-in-out infinite;
+  animation-delay: var(--pulse-delay, 0s);
+  pointer-events: none;
+}
+@keyframes lineup-pulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+@media (hover: hover) and (min-width: 768px) {
+  .lineup-podium:hover {
+    border-color: rgb(235 0 40 / 0.8);
+  }
+  .lineup-podium:hover .lineup-beam {
+    filter: blur(6px) brightness(1.35);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lineup-beam,
+  .lineup-pool {
+    animation: none;
+  }
+  .lineup-podium,
+  .lineup-beam {
+    transition: none;
+  }
+}
+@media (max-width: 639px) {
+  /* stacked on phones: wide, short panels (also ~30% shorter than before) */
+  .lineup-podium,
+  .lineup-podium-tall {
+    aspect-ratio: 16 / 7;
+  }
+}
+
+/* /speakers "Ideas we're exploring" rows (components/sections/directions.tsx). */
+.direction-num {
+  color: transparent;
+  -webkit-text-stroke: 1px #eb0028;
+  transition: color 0.35s var(--ease-out-expo);
+}
+.direction-row {
+  transition: transform 0.35s var(--ease-out-expo);
+}
+/* hover only where a real pointer can hover (not on touch) */
+@media (hover: hover) and (min-width: 768px) {
+  .direction-row:hover {
+    transform: translateX(6px);
+  }
+  .direction-row:hover .direction-num {
+    color: #eb0028;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .direction-row,
+  .direction-num {
+    transition: none;
+  }
+  .direction-row:hover {
+    transform: none;
+  }
+}
+
+/* /team tiles (components/sections/team.tsx): one 4:5 frame for photos and placeholders. */
+.team-tile {
+  transition: transform 0.35s var(--ease-out-expo);
+}
+.team-frame {
+  position: relative;
+  display: flex;
+  aspect-ratio: 4 / 5;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgb(235 0 40 / 0.35);
+  background: #070304;
+  transition: border-color 0.35s var(--ease-out-expo);
+}
+.team-glow {
+  position: absolute;
+  inset: -20% -10% 30%;
+  background: radial-gradient(50% 60% at 50% 0%, rgb(235 0 40 / 0.28), rgb(235 0 40 / 0.08) 55%, transparent 75%);
+  pointer-events: none;
+}
+.team-initials {
+  color: rgb(235 0 40 / 0);
+  -webkit-text-stroke: 1px rgb(255 77 94 / 0.92);
+  transition: color 0.35s var(--ease-out-expo);
+}
+/* Spotlight that follows the cursor (--mx/--my set on pointermove). */
+.team-spot {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(160px circle at var(--mx, 50%) var(--my, 30%), rgb(255 59 85 / 0.22), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.team-photo {
+  filter: grayscale(1) contrast(1.05);
+  transition: filter 0.6s var(--ease-out-expo);
+}
+/* ~25% dark-red multiply so mixed photo quality reads as one set */
+.team-tint {
+  position: absolute;
+  inset: 0;
+  background: #5a0010;
+  opacity: 0.25;
+  mix-blend-mode: multiply;
+  transition: opacity 0.6s var(--ease-out-expo);
+  pointer-events: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .team-tile:hover .team-frame {
+    border-color: rgb(235 0 40 / 0.85);
+  }
+  .team-tile:hover {
+    transform: translateY(-4px);
+  }
+  .team-tile:hover .team-spot {
+    opacity: 1;
+  }
+  .team-tile:hover .team-initials {
+    color: rgb(235 0 40 / 0.4);
+  }
+  .team-tile:hover .team-photo {
+    filter: none;
+  }
+  .team-tile:hover .team-tint {
+    opacity: 0;
+  }
+}
+.team-tile:focus-visible .team-frame {
+  border-color: rgb(235 0 40 / 0.85);
+}
+@media (prefers-reduced-motion: reduce) {
+  /* keep only the outline change */
+  .team-tile,
+  .team-tile:hover {
+    transform: none;
+    transition: none;
+  }
+  .team-tile:hover .team-spot {
+    opacity: 0;
+  }
+  .team-tile:hover .team-initials {
+    color: rgb(235 0 40 / 0);
+  }
+  .team-photo,
+  .team-tint,
+  .team-initials {
+    transition: none;
+  }
+}
+/* Filter chips */
+.team-chip {
+  min-height: 44px;
+  padding: 0 1.1rem;
+  border: 1px solid rgb(255 255 255 / 0.18);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #cfc4c8;
+  transition: border-color 0.25s, background-color 0.25s, color 0.25s;
+}
+.team-chip:hover {
+  border-color: rgb(235 0 40 / 0.7);
+  color: #fff;
+}
+.team-chip[aria-pressed="true"] {
+  border-color: #eb0028;
+  background: #eb0028;
+  color: #fff;
+}
+.team-chip:focus-visible {
+  outline: 2px solid #ff3b55;
+  outline-offset: 3px;
+}
+
+/* /theme changemaker rows: line reveals on hover/focus where a pointer can hover. */
+.cm-num {
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(235 0 40 / 0.8);
+  transition: color 0.35s var(--ease-out-expo);
+}
+.cm-line {
+  transition: opacity 0.35s var(--ease-out-expo), transform 0.35s var(--ease-out-expo);
+}
+@media (hover: hover) and (pointer: fine) {
+  .cm-line {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  .cm-row:hover .cm-line,
+  .cm-row:focus-visible .cm-line {
+    opacity: 1;
+    transform: none;
+  }
+  .cm-row:hover .cm-num,
+  .cm-row:focus-visible .cm-num {
+    color: #eb0028;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cm-line,
+  .cm-num {
+    transition: none;
+  }
+  .cm-line {
+    transform: none !important;
+  }
+}
+
+/* Home: podium cards (components/home/teasers.tsx). The cone stays inside the card. */
+.podium-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  background: linear-gradient(180deg, #0c0608, #050304);
+  transition: transform 0.5s var(--ease-out-expo), border-color 0.5s;
+}
+.podium-card-cone {
+  position: absolute;
+  inset: 0 0 0 0;
+  background: linear-gradient(180deg, rgb(255 236 228 / 0.22), rgb(235 0 40 / 0.1) 70%, transparent 92%);
+  clip-path: polygon(42% 0, 58% 0, 92% 100%, 8% 100%);
+  opacity: 0.55;
+  transition: opacity 0.5s var(--ease-out-expo);
+}
+.podium-card:hover,
+.podium-card:focus-visible {
+  transform: translateY(-6px);
+  border-color: rgb(235 0 40 / 0.6);
+}
+.podium-card:hover .podium-card-cone,
+.podium-card:focus-visible .podium-card-cone {
+  opacity: 1;
+}
+.podium-card:focus-visible {
+  outline: 2px solid #ff3b55;
+  outline-offset: 4px;
+}
+
+/* The closing band fades into black; drop the footer hairline under it. */
+body:has(.closing-band) footer {
+  border-top-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .podium-card,
+  .podium-card-cone {
+    transition: none;
+  }
+  .podium-card:hover,
+  .podium-card:focus-visible {
+    transform: none;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Image page hero (components/page-hero.tsx)
+   ------------------------------------------------------------------ */
+/* One full screen (small viewport height, so mobile browser bars never cut it).
+   No upper cap: on a 1080px-tall screen a cap would pull the next section above the fold. */
+.image-hero {
+  min-height: max(520px, 100svh);
+}
+/* object-position per page (PageHero props); phones override below */
+.image-hero-img {
+  object-position: var(--hero-pos);
+}
+@media (max-width: 639px) {
+  .image-hero-img {
+    object-position: var(--hero-pos-m) !important;
+  }
+}
+.image-hero-beam {
+  position: absolute;
+  top: -10%;
+  left: 38%;
+  width: 26%;
+  height: 95%;
+  background: linear-gradient(180deg, rgb(255 59 85 / 0.9), rgb(235 0 40 / 0.4) 55%, transparent 85%);
+  filter: blur(40px);
+  opacity: 0.35;
+  transform-origin: 50% 0;
+  transform: rotate(-18deg);
+  animation: hero-beam-sway 14s ease-in-out infinite;
+}
+@keyframes hero-beam-sway {
+  0%, 100% { transform: rotate(-18deg); }
+  50% { transform: rotate(-10deg); }
+}
+.image-hero-haze {
+  position: absolute;
+  width: 28%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 220 214 / 0.16), transparent);
+  filter: blur(30px);
+  animation: hero-haze-drift 18s ease-in-out infinite;
+}
+.image-hero-haze-2 {
+  width: 22%;
+  animation-duration: 23s;
+  animation-direction: reverse;
+}
+@keyframes hero-haze-drift {
+  0%, 100% { transform: translate3d(0, 0, 0); opacity: 0.6; }
+  50% { transform: translate3d(6%, -8%, 0); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .image-hero-beam,
+  .image-hero-haze {
+    animation: none;
+  }
+}
+
+/* Scroll cue: a 1px line with a dot sliding down it. */
+.scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(1rem, 3svh, 2rem);
+  width: 1px;
+  height: 44px;
+  transform: translateX(-50%);
+  background: rgb(255 255 255 / 0.25);
+  overflow: hidden;
+}
+.scroll-cue-dot {
+  position: absolute;
+  left: -2px;
+  top: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #eb0028;
+  animation: hero-scroll-cue 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes hero-scroll-cue {
+  0% { transform: translateY(-6px); opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(44px); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue {
+    display: none;
+  }
+}
+
 /* Film grain: one static SVG noise tile, composited once */
 @utility grain {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
@@ -149,65 +756,6 @@ html.has-custom-cursor select {
 /* ------------------------------------------------------------------
    Keyframes (all transform/opacity/mask only, compositor-friendly)
    ------------------------------------------------------------------ */
-@keyframes calligraphy-reveal {
-  from {
-    -webkit-mask-position: 100% 0;
-    mask-position: 100% 0;
-  }
-  to {
-    -webkit-mask-position: 0% 0;
-    mask-position: 0% 0;
-  }
-}
-
-/* Pen edge riding the calligraphy mask: edge centre moves -0.5W → 1.5W */
-@keyframes pen-sweep {
-  0% {
-    transform: translateX(-50%);
-    opacity: 0;
-  }
-  15%,
-  85% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(150%);
-    opacity: 0;
-  }
-}
-
-@keyframes shimmer-sweep {
-  0% {
-    transform: translateX(-120%) skewX(-18deg);
-  }
-  55%,
-  100% {
-    transform: translateX(320%) skewX(-18deg);
-  }
-}
-
-@keyframes ribbon-drift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
-  }
-  50% {
-    transform: translate3d(-3%, 1.5%, 0) rotate(-1.5deg) scale(1.04);
-  }
-}
-
-@keyframes glow-breathe {
-  0%,
-  100% {
-    opacity: 0.55;
-    transform: translate3d(-50%, -50%, 0) scale(1);
-  }
-  50% {
-    opacity: 0.85;
-    transform: translate3d(-50%, -50%, 0) scale(1.08);
-  }
-}
-
 @keyframes streak {
   0% {
     transform: translateX(-100%);

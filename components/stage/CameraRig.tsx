@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { easing } from "maath";
 import * as THREE from "three";
@@ -16,37 +16,64 @@ interface Framing {
   look: THREE.Vector3;
   /** Pointer parallax strength. */
   parallax: number;
+  /** Vertical view shift as a fraction of the canvas height (portrait only). */
+  shiftY: number;
 }
 
+/** Open band between the hero title and the bottom copy, as fractions of the viewport height. */
+type Band = { top: number; bottom: number };
+const DEFAULT_BAND: Band = { top: 0.33, bottom: 0.64 };
+
+/** Measures the band on narrow screens, where the stage shows between the two text blocks. */
+function measureBand(): Band {
+  const title = document.querySelector(".hero-title");
+  const copy = document.querySelector("[data-hero-bottom]");
+  if (!title || !copy) return DEFAULT_BAND;
+  const h = window.innerHeight;
+  const top = title.getBoundingClientRect().bottom / h;
+  const bottom = copy.getBoundingClientRect().top / h;
+  return bottom - top > 0.1 ? { top, bottom } : DEFAULT_BAND;
+}
+
+/** Mic height in world units: stand 1.42 + head ≈ 1.67, × MIC_SCALE 1.6. */
+const MIC_H = 2.67;
+
 /**
- * Wide screens: stage to the right of the copy. Portrait: the camera pulls back
- * so the disc spans most of the width, and aims above the mic so the stage sits
- * in the lower part of the frame, under the copy.
+ * Wide screens: stage to the right of the copy. Portrait: the mic is fitted into the
+ * open band between the title and the bottom copy, as large as the band allows, so
+ * no text ever sits on it (≈ 30–35% of the screen height on a 390×844 phone).
  */
-function getFraming(aspect: number): Framing {
+function getFraming(aspect: number, height: number, band: Band): Framing {
   if (aspect >= 1) {
+    // Landscape phones / very short windows: pull back so the mic reads smaller
+    // and the whole stage stays in frame under the strip.
+    const k = height <= 520 ? 1.18 : 1;
+    const v = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z * k);
     return {
       fov: 30,
       filmOffset: -Math.min(8, Math.max(0, (aspect - 1.15) * 11)),
-      from: new THREE.Vector3(0, 4.6, 19),
-      to: new THREE.Vector3(0, 3.4, 13.2),
+      from: v(0, 4.6, 19),
+      to: v(0, 3.4, 13.2),
       look: new THREE.Vector3(0, 1.75, -0.4),
       parallax: 1,
+      shiftY: 0,
     };
   }
   const fov = 45;
   const tanHalf = Math.tan(THREE.MathUtils.degToRad(fov / 2));
-  // Half-width of the floor to show at the disc: phones ≈ disc + a margin,
-  // tablets a little wider so curtains show on both sides.
-  const halfWidth = THREE.MathUtils.lerp(4.15, 5.4, THREE.MathUtils.clamp((aspect - 0.46) / 0.3, 0, 1));
-  const d = halfWidth / (tanHalf * aspect);
+  // Mic fills 86% of the band (a little air above the head and below the base).
+  const frac = Math.max(0.18, (band.bottom - band.top) * 0.86);
+  const d = MIC_H / (frac * 2 * tanHalf);
+  const midY = MIC_H / 2;
   return {
     fov,
     filmOffset: 0,
-    from: new THREE.Vector3(0, d * 0.28, d * 1.3),
-    to: new THREE.Vector3(0, d * 0.2, d),
-    look: new THREE.Vector3(0, d * 0.245, 0),
+    from: new THREE.Vector3(0, midY + d * 0.32, d * 1.3),
+    to: new THREE.Vector3(0, midY + d * 0.2, d),
+    look: new THREE.Vector3(0, midY, 0),
     parallax: 0.6,
+    // The look point lands mid-screen; shift the view so it lands mid-band instead.
+    shiftY: 0.5 - (band.top + band.bottom) / 2,
   };
 }
 
@@ -56,7 +83,30 @@ export function CameraRig() {
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const size = useThree((s) => s.size);
   const startAt = useRef<number | null>(null);
-  const framing = useMemo(() => getFraming(size.width / size.height), [size.width, size.height]);
+  const [band, setBand] = useState<Band>(DEFAULT_BAND);
+  const framing = useMemo(
+    () => getFraming(size.width / size.height, size.height, band),
+    [size.width, size.height, band],
+  );
+
+  // Re-measure the open band when the layout settles (fonts, resize).
+  useEffect(() => {
+    const update = () =>
+      setBand((prev) => {
+        const next = measureBand();
+        return Math.abs(next.top - prev.top) + Math.abs(next.bottom - prev.bottom) > 0.005 ? next : prev;
+      });
+    update();
+    document.fonts?.ready.then(update);
+    const ro = new ResizeObserver(update);
+    const copy = document.querySelector("[data-hero-bottom]");
+    if (copy) ro.observe(copy);
+    window.addEventListener("resize", update);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", update);
+    };
+  }, [size.width, size.height]);
   const look = useMemo(() => new THREE.Vector3(), []);
   const base = useMemo(() => new THREE.Vector3(), []);
   const goal = useMemo(() => new THREE.Vector3(), []);
@@ -65,9 +115,14 @@ export function CameraRig() {
     camera.fov = framing.fov;
     camera.filmGauge = 35;
     camera.filmOffset = framing.filmOffset;
+    if (framing.shiftY) {
+      camera.setViewOffset(size.width, size.height, 0, framing.shiftY * size.height, size.width, size.height);
+    } else {
+      camera.clearViewOffset();
+    }
     camera.updateProjectionMatrix();
     look.copy(framing.look);
-  }, [camera, framing, look]);
+  }, [camera, framing, look, size.width, size.height]);
 
   useEffect(() => {
     camera.position.copy(runtime.reducedMotion ? framing.to : framing.from);

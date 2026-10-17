@@ -2,8 +2,8 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useId, useState } from "react";
+import Link from "next/link";
 import { site } from "@/lib/site";
-import { SectionHeading } from "@/components/ui/section-heading";
 
 /** Edit questions here. Keep answers factual: only what organisers have confirmed. */
 const FAQS = [
@@ -17,7 +17,7 @@ const FAQS = [
   },
   {
     q: "Who can apply to speak?",
-    a: "Anyone with an original idea that fits the theme. Apply through the speaker form; the curation team reviews every application and will reach out to shortlisted speakers.",
+    a: `Anyone with an original idea that fits the theme. Apply through the speaker form; the curation team reviews every application and will reach out to shortlisted speakers. ${site.speakerRules}`,
   },
   {
     q: "How long are the talks?",
@@ -33,16 +33,16 @@ const FAQS = [
   },
 ];
 
-export function Faq() {
+export function Faq({ footerLink }: { footerLink?: { href: string; label: string } } = {}) {
   const [open, setOpen] = useState<number | null>(0);
   const base = useId();
 
   return (
-    <section id="faq" aria-labelledby="faq-title" className="gutter relative border-t border-line py-28 md:py-40">
-      <div className="grid gap-14 lg:grid-cols-12">
-        <SectionHeading id="faq-title" index="06" label="FAQ" title="Before you" accent="ask." className="lg:col-span-5" />
+    <section id="faq" aria-labelledby="faq-title" className="gutter relative border-t border-line py-14 md:py-20">
+      <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
+        <h2 id="faq-title" className="display text-[clamp(2rem,4.5vw,3.5rem)] lg:col-span-4">Questions</h2>
 
-        <ul className="border-t border-line lg:col-span-7">
+        <ul className="border-t border-line lg:col-span-8">
           {FAQS.map((f, i) => {
             const isOpen = open === i;
             const btn = `${base}-b${i}`;
@@ -56,10 +56,10 @@ export function Faq() {
                     aria-expanded={isOpen}
                     aria-controls={panel}
                     onClick={() => setOpen(isOpen ? null : i)}
-                    className="group flex w-full items-center justify-between gap-6 py-6 text-left text-lg font-medium text-white md:text-xl"
+                    className="group flex min-h-11 w-full items-center justify-between gap-6 py-6 text-left text-xl font-medium text-white md:text-2xl"
                   >
                     <span className="transition-colors group-hover:text-red-text">{f.q}</span>
-                    <span aria-hidden className="relative block size-4 shrink-0">
+                    <span aria-hidden className="relative block size-5 shrink-0">
                       <span className="absolute left-0 top-1/2 h-px w-full bg-red" />
                       <span
                         className={`absolute left-1/2 top-0 h-full w-px bg-red transition-transform duration-500 ${isOpen ? "scale-y-0" : ""}`}
@@ -79,7 +79,7 @@ export function Faq() {
                       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                       className="overflow-hidden"
                     >
-                      <p className="max-w-2xl pb-7 text-grey">{f.a}</p>
+                      <p className="max-w-[62ch] pb-7 text-[17px] leading-[1.7] text-[#cfc4c8] md:text-[18px]">{f.a}</p>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -87,6 +87,13 @@ export function Faq() {
             );
           })}
         </ul>
+        {footerLink && (
+          <p className="lg:col-span-8 lg:col-start-5 lg:text-right">
+            <Link href={footerLink.href} className="inline-flex min-h-11 items-center text-lg text-white underline decoration-red underline-offset-4 hover:text-red-text">
+              {footerLink.label}
+            </Link>
+          </p>
+        )}
       </div>
     </section>
   );
