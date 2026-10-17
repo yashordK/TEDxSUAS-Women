@@ -22,6 +22,7 @@ export function PageHero({
   mobilePosition,
   imageShift,
   backdrop,
+  imageFilter,
 }: {
   eyebrow: string;
   title: string;
@@ -39,6 +40,8 @@ export function PageHero({
   imageShift?: string;
   /** Custom decorative layer instead of a photo (e.g. /theme's names). Must be aria-hidden. */
   backdrop?: React.ReactNode;
+  /** CSS filter on the photo, e.g. "blur(2.5px) brightness(0.7)" to turn it into texture. */
+  imageFilter?: string;
 }) {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
@@ -78,7 +81,7 @@ export function PageHero({
           <picture>
             {mobile && <source media="(max-width: 639px)" srcSet={mobile.srcSet} sizes={mobile.sizes} />}
             {/* art-directed <picture>; src/srcSet come from getImageProps */}
-            <img {...desktop} alt="" className="image-hero-img object-cover" style={{ ...desktop.style, ...pos }} />
+            <img {...desktop} alt="" className="image-hero-img object-cover" style={{ ...desktop.style, ...pos, ...(imageFilter ? { filter: imageFilter } : {}) }} />
           </picture>
         </motion.div>
       )}

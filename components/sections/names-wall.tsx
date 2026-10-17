@@ -4,8 +4,8 @@ import { useEffect, useRef } from "react";
 import { site } from "@/lib/site";
 
 const NAMES = site.changemakers.map((c) => c.name);
-const ROWS = 16;
-const PER_ROW = 16;
+const ROWS = 7;
+const PER_ROW = 12;
 const GLOWING = 5;
 
 /** Deterministic shuffle (same on server and client, so hydration matches). */
@@ -45,7 +45,7 @@ export function NamesWall() {
       const box = el.getBoundingClientRect();
       const narrow = window.innerWidth < 1024;
       // centre inside the unfaded part of the wall (the mask fades its edges)
-      const [x0, x1, y0, y1] = narrow ? [0.3, 0.96, 0.12, 0.36] : [0.6, 0.94, 0.16, 0.8];
+      const [x0, x1, y0, y1] = narrow ? [0.3, 0.96, 0.12, 0.36] : [0.42, 0.95, 0.08, 0.9];
       const visible = [...el.querySelectorAll<HTMLElement>(".nw-name")].filter((n) => {
         const r = n.getBoundingClientRect();
         const cx = (r.left + r.right) / 2, cy = (r.top + r.bottom) / 2;
@@ -75,6 +75,8 @@ export function NamesWall() {
 
   return (
     <div aria-hidden className="nw">
+      {/* keep the headline side dark over the photo */}
+      <span className="absolute inset-0 bg-[linear-gradient(90deg,rgb(5_3_4/0.92)_0%,rgb(5_3_4/0.8)_35%,rgb(5_3_4/0.25)_62%,transparent_80%)]" />
       <div ref={wall} className="nw-wall">
         <div className="nw-plane">
           {rows.map((row, r) => (

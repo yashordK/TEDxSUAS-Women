@@ -20,6 +20,11 @@ export default function ThemePage() {
         title="You are"
         accent="the change."
         intro={`${first} ${second}: three Sanskrit words, one idea. Change does not wait for someone else.`}
+        image="/images/theme-hero.webp"
+        imagePosition="right center"
+        mobilePosition="78% center"
+        // blurred and dimmed: the photo's names read as texture, the live wall on top stays sharp
+        imageFilter="blur(2.5px) brightness(0.7)"
         backdrop={<NamesWall />}
       />
       <Theme />
