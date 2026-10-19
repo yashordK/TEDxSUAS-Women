@@ -17,7 +17,7 @@ export function Marquee() {
                 <span
                   className={`display px-6 text-[clamp(2rem,5vw,4.5rem)] md:px-10 ${
                     item.startsWith("त")
-                      ? "font-deva text-gradient tracking-normal"
+                      ? "font-deva text-gradient tracking-normal leading-snug py-1"
                       : "uppercase text-transparent [-webkit-text-stroke:1px_rgb(255_255_255/0.55)]"
                   }`}
                 >

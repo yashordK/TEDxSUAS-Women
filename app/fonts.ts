@@ -1,4 +1,4 @@
-import { Montserrat, Mukta, Playfair_Display } from "next/font/google";
+import { Montserrat, Playfair_Display, Vesper_Libre } from "next/font/google";
 
 export const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -14,9 +14,10 @@ export const montserrat = Montserrat({
   display: "swap",
 });
 
-export const mukta = Mukta({
+// Vesper Libre: a Devanagari-first serif designed for both scripts.
+export const mukta = Vesper_Libre({
   subsets: ["devanagari", "latin"],
-  weight: ["400", "600", "800"],
+  weight: ["400", "500", "700", "900"],
   variable: "--font-mukta",
   display: "swap",
 });

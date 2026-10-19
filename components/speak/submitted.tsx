@@ -29,10 +29,10 @@ export function SubmittedScreen({ refCode, name }: { refCode: string; name: stri
       </motion.h1>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 2.1 }}>
         <p className="mx-auto mt-6 max-w-lg text-lg text-grey">
-          Thank you{first ? `, ${first}` : ""}. We&apos;ve sent a confirmation to your inbox. Our curation team reads
+          Thank you{first ? `, ${first}` : ""}. We have received your idea. Our curation team reads
           every application, and <span className="text-white">we&apos;ll get back to you within a month.</span>
         </p>
-        <p className="eyebrow mt-10 text-grey">Your reference ID</p>
+        <p className="eyebrow mt-10 text-grey">Your reference ID · please save this</p>
         <p className="mt-3 font-mono text-2xl tracking-[0.25em] text-red-text md:text-3xl">{refCode}</p>
         <div className="mt-12 flex flex-col justify-center gap-3 sm:flex-row">
           <Button href="/">Back to home</Button>

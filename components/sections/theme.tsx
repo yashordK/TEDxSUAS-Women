@@ -44,7 +44,7 @@ export function Theme() {
 
         {/* Sanskrit, word by word */}
         <FadeIn className="lg:col-span-5 lg:pt-24">
-          <p lang="sa" className="font-deva text-gradient text-[clamp(2.25rem,5vw,3.75rem)] font-extrabold leading-none">
+          <p lang="sa" className="font-deva text-gradient text-[clamp(2.25rem,5vw,3.75rem)] font-extrabold leading-snug pt-2">
             {site.theme.devanagari}
           </p>
           <p className="eyebrow mt-4 text-grey">{site.theme.transliteration}</p>
