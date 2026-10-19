@@ -134,7 +134,7 @@ html.has-custom-cursor select {
 }
 
 @utility display {
-  font-family: var(--font-display);
+  font-family: var(--font-playfair), Georgia, serif;
   font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1;

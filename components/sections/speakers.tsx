@@ -11,7 +11,7 @@ export function Speakers() {
       <div className="grid gap-10 lg:grid-cols-12 lg:items-end">
         <SectionHeading
           id="speakers-title"
-          index="03"
+          index="04"
           label="Speakers"
           title={revealed ? "The voices of" : "Voices,"}
           accent={revealed ? "2027." : "coming soon."}

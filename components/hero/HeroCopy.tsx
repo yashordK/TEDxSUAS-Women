@@ -78,7 +78,7 @@ export function HeroCopy({ visible, reducedMotion }: HeroCopyProps) {
 
       <motion.div variants={item} className="mt-7 grid grid-cols-2 gap-3 max-[359px]:grid-cols-1 sm:mt-9 sm:flex sm:flex-wrap">
         <a
-          href="#apply"
+          href="/speak"
           className={`inline-flex min-h-12 items-center justify-center rounded-full bg-ted px-4 sm:px-7 text-sm font-semibold text-white shadow-[0_10px_40px_-10px_rgba(235,0,40,0.8)] transition hover:bg-[#ff0a35] ${focus}`}
         >
           Apply to speak

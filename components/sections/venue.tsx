@@ -17,7 +17,7 @@ export function Venue() {
   return (
     <section id="venue" aria-labelledby="venue-title" className="relative border-t border-line py-28 md:py-40">
       <div className="gutter">
-        <SectionHeading id="venue-title" index="05" label="Venue" title="Where it" accent="begins." />
+        <SectionHeading id="venue-title" index="06" label="Venue" title="Where it" accent="begins." />
       </div>
 
       {/* Campus, red-lit */}

@@ -5,29 +5,18 @@
 export type Member = { name: string; role?: string; photo?: string };
 
 export const coreLeadership: Member[] = [
-  { name: "Dhruvi Namdeo", role: "Organiser & Curator" },
-  { name: "Nishita Raghavendra", role: "Organiser & Curator" },
+  { name: "Dhruvi Namdeo", role: "Organiser" },
+  { name: "Nishita Raghavendra", role: "Organiser" },
   { name: "Suyash Vasal Jain", role: "Executive Producer" },
   { name: "Medhansh Rathod", role: "Sponsorship & Budget Manager" },
 ];
 
 export const teams: { name: string; members: Member[] }[] = [
-  {
-    name: "Curator Team",
-    members: [{ name: "Yash Upadhyay" }, { name: "Twinkle Ramchandani" }, { name: "Prashasti Verma" }],
-  },
+  { name: "Curator Team", members: [{ name: "Twinkle Ramchandani" }, { name: "Yash Upadhyay" }] },
   {
     name: "Communication, Editorial & Marketing",
-    members: [{ name: "Twinkle Ramchandani" }, { name: "Garima Tilwankar" }, { name: "Tanishka Gupta" }],
-  },
-  {
-    name: "Video Production & Design",
-    members: [{ name: "Nishita Raghavendra" }, { name: "Dhruvi Namdeo" }],
-  },
-  {
-    name: "Design, AV & Production",
-    members: [{ name: "Dhruvi Namdeo" }, { name: "Nishita Raghavendra" }],
+    members: [{ name: "Garima Tilwankar" }, { name: "Tanishka Gupta" }],
   },
   { name: "Event Manager", members: [{ name: "Priyal Agrawal" }] },
-  { name: "Website Manager", members: [{ name: "Yash Upadhyay" }, { name: "Suyash Vasal Jain" }] },
+  { name: "Website Manager", members: [{ name: "Yash Upadhyay" }] },
 ];
