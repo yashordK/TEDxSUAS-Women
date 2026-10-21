@@ -27,7 +27,7 @@ export function toRow(a: SpeakerApplication, refCode: string): NewSpeakerApplica
     occupation: a.occupation === "Other" ? `Other: ${a.occupationOther}` : a.occupation,
     organisation: a.organisation,
     isSymbiosisStudent: student ? a.isSymbiosisStudent === "yes" : null,
-    institute: symbi ? a.institute || null : null,
+    institute: symbi ? a.organisation : null, // Symbiosis students' university is their institute
     programme: symbi ? a.programme || null : null,
     yearOfStudy: symbi ? a.yearOfStudy || null : null,
     prn: symbi ? a.prn || null : null,
@@ -37,8 +37,7 @@ export function toRow(a: SpeakerApplication, refCode: string): NewSpeakerApplica
     themeConnection: a.themeConnection,
     personalImpact: a.personalImpact,
     priorExperience: a.priorExperience || null,
-    preferredLanguage:
-      a.preferredLanguage === "Other" ? `Other: ${a.preferredLanguageOther}` : a.preferredLanguage,
+    preferredLanguage: a.preferredLanguage,
     demoVideoUrl: a.demoVideoUrl,
     consentOriginal: a.consentOriginal,
     consentContact: a.consentContact,
@@ -63,7 +62,8 @@ export async function saveApplication(a: SpeakerApplication): Promise<string> {
   }
 
   if (process.env.NODE_ENV === "production") {
-    throw new Error("DATABASE_URL is not configured");
+    // Shows in Vercel → Logs. Fix: add DATABASE_URL in Project Settings → Environment Variables, then redeploy.
+    throw new Error("DATABASE_URL is missing or malformed in this deployment's environment variables");
   }
 
   // Local development without Neon: append to a git-ignored JSON file.

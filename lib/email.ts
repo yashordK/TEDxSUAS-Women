@@ -39,7 +39,7 @@ export async function sendApplicantConfirmation(a: SpeakerApplication, refCode: 
       <h1 style="font-family:Georgia,serif;font-size:28px;margin:0 0 16px">Your idea is with us, ${esc(first)}.</h1>
       <p style="line-height:1.6;color:#cfc4c8">Thank you for applying to speak at ${esc(site.name)}. We've received
       <strong style="color:#fff">“${esc(a.ideaTitle)}”</strong>, and our curation team will read every word.</p>
-      <p style="line-height:1.6;color:#cfc4c8">We'll get back to you <strong style="color:#fff">within a month</strong>.
+      <p style="line-height:1.6;color:#cfc4c8">We'll get back to you within a month.
       Keep your reference ID handy if you write to us:</p>
       <p style="font-size:22px;letter-spacing:0.2em;font-weight:700;color:#ff4d5e;margin:20px 0">${refCode}</p>
       <p style="line-height:1.6;color:#cfc4c8">${esc(site.theme.devanagari)}: ${esc(site.theme.tagline.toLowerCase())}.</p>
@@ -61,13 +61,12 @@ export async function sendOrganiserNotification(a: SpeakerApplication, refCode: 
       : []),
     ...(a.isSymbiosisStudent === "yes"
       ? ([
-          ["Institute", a.institute],
           ["Programme", a.programme],
           ["Year", a.yearOfStudy],
           ["PRN", a.prn],
         ] as [string, string | undefined][])
       : []),
-    ["Language", a.preferredLanguage === "Other" ? a.preferredLanguageOther : a.preferredLanguage],
+    ["Language", a.preferredLanguage],
     ["Demo video", a.demoVideoUrl],
   ];
   const long: [string, string | undefined][] = [

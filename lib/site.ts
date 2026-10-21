@@ -10,7 +10,7 @@ export const site = {
 
   theme: {
     devanagari: "त्वमेव परिवर्तनम्",
-    transliteration: "Twamev Parivartanam",
+    transliteration: "Tvamev Parivartanam",
     meaning: "You are the change.",
     tagline: "It begins with you",
   },
