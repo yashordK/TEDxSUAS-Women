@@ -31,7 +31,8 @@ export const looksLikeSymbiosis = (s: string) => SYMBIOSIS.test(s);
 const words = (s: string) => s.trim().split(/\s+/).filter(Boolean).length;
 const optionalText = (max: number) => z.string().trim().max(max).optional().or(z.literal(""));
 
-const MIN_AGE = 13;
+// Organisers' choice: TEDx rules set no minimum speaker age.
+const MIN_AGE = 10;
 const todayIso = () => new Date().toISOString().slice(0, 10);
 
 /* ------------------------------ Step 1 ------------------------------ */
