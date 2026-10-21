@@ -18,7 +18,15 @@ export const OCCUPATIONS = [
 ] as const;
 
 export const YEARS = ["1st year", "2nd year", "3rd year", "4th year", "5th year", "Postgraduate", "PhD"] as const;
-export const LANGUAGES = ["English", "Hindi", "Either is fine", "Other"] as const;
+export const LANGUAGES = ["English", "Hindi"] as const;
+
+/**
+ * Recognises a Symbiosis institute from what applicants typically type:
+ * the full name, or a common short form (SUAS, SIU, SIBM, SIT, SLS, SCMHRD…).
+ */
+const SYMBIOSIS =
+  /symbiosis|\b(suas|siu|sibm|simc|sit|sls|scmhrd|siib|scms|sicsr|sid|sims|simsree|ssbf|ssla|sse|ssss|sihs|scit|ssp|sitm|sidtm|ssca|ssvap)\b/i;
+export const looksLikeSymbiosis = (s: string) => SYMBIOSIS.test(s);
 
 const words = (s: string) => s.trim().split(/\s+/).filter(Boolean).length;
 const optionalText = (max: number) => z.string().trim().max(max).optional().or(z.literal(""));
@@ -52,8 +60,7 @@ export const aboutSchema = z
 
     // Students only
     isSymbiosisStudent: z.enum(["yes", "no"]).optional().or(z.literal("")),
-    // Symbiosis students only
-    institute: optionalText(160),
+    // Symbiosis students only (their institute is the organisation field)
     programme: optionalText(120),
     yearOfStudy: z.enum(YEARS).optional().or(z.literal("")),
     prn: optionalText(30),
@@ -66,11 +73,23 @@ export const aboutSchema = z
     if (!v.isSymbiosisStudent)
       ctx.addIssue({ code: "custom", path: ["isSymbiosisStudent"], message: "Please choose one" });
 
+    if (v.isSymbiosisStudent === "yes" && !looksLikeSymbiosis(v.organisation))
+      ctx.addIssue({
+        code: "custom",
+        path: ["organisation"],
+        message: "That doesn't look like a Symbiosis institute. Enter its name, e.g. Symbiosis University of Applied Sciences",
+      });
+    if (v.isSymbiosisStudent === "no" && looksLikeSymbiosis(v.organisation))
+      ctx.addIssue({
+        code: "custom",
+        path: ["isSymbiosisStudent"],
+        message: "Your university looks like a Symbiosis institute. Should this be Yes?",
+      });
+
     if (v.isSymbiosisStudent === "yes") {
-      if (!v.institute) ctx.addIssue({ code: "custom", path: ["institute"], message: "Which Symbiosis institute?" });
       if (!v.programme) ctx.addIssue({ code: "custom", path: ["programme"], message: "Enter your programme" });
       if (!v.yearOfStudy) ctx.addIssue({ code: "custom", path: ["yearOfStudy"], message: "Choose your year" });
-      if (!v.prn) ctx.addIssue({ code: "custom", path: ["prn"], message: "Enter your PRN / enrolment number" });
+      if (!v.prn) ctx.addIssue({ code: "custom", path: ["prn"], message: "Enter your PRN / Enrollment number" });
     }
   });
 
@@ -94,21 +113,15 @@ export const ideaSchema = z.object({
 });
 
 /* ------------------------------ Step 3 ------------------------------ */
-export const experienceSchema = z
-  .object({
-    priorExperience: optionalText(2000),
-    preferredLanguage: z.enum(LANGUAGES, { message: "Choose a language" }),
-    preferredLanguageOther: optionalText(60),
-    demoVideoUrl: z
-      .string()
-      .trim()
-      .url("Paste a full link, starting with https://")
-      .refine((u) => /^https:\/\//i.test(u), "Use an https:// link"),
-  })
-  .superRefine((v, ctx) => {
-    if (v.preferredLanguage === "Other" && !v.preferredLanguageOther)
-      ctx.addIssue({ code: "custom", path: ["preferredLanguageOther"], message: "Which language?" });
-  });
+export const experienceSchema = z.object({
+  priorExperience: optionalText(2000),
+  preferredLanguage: z.enum(LANGUAGES, { message: "Choose Hindi or English" }),
+  demoVideoUrl: z
+    .string()
+    .trim()
+    .url("Paste a full link, starting with https://")
+    .refine((u) => /^https:\/\//i.test(u), "Use an https:// link"),
+});
 
 /* ------------------------------ Step 4 ------------------------------ */
 export const consentSchema = z.object({
@@ -129,7 +142,7 @@ export const speakerApplicationSchema = z
     ...consentSchema.shape,
   })
   .superRefine((v, ctx) => {
-    for (const step of [aboutSchema, experienceSchema]) {
+    for (const step of [aboutSchema]) {
       const r = step.safeParse(v);
       if (!r.success) r.error.issues.forEach((i) => ctx.addIssue({ ...i, code: "custom" }));
     }

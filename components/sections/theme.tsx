@@ -68,7 +68,7 @@ export function Theme() {
           <FadeIn>
             <p>
               There is an old habit of waiting. Waiting for the right moment, the right permission,
-              the right person to arrive and set things in motion. <span className="text-white">Twamev Parivartanam</span> ends
+              the right person to arrive and set things in motion. <span className="text-white">Tvamev Parivartanam</span> ends
               the wait with three words: <em className="text-white">you are the change.</em> Not a
               symbol of it, not a witness to it. The thing itself.
             </p>

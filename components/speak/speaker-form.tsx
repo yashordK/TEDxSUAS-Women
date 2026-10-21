@@ -29,7 +29,6 @@ type FormValues = {
   occupationOther: string;
   organisation: string;
   isSymbiosisStudent: string;
-  institute: string;
   programme: string;
   yearOfStudy: string;
   prn: string;
@@ -40,7 +39,6 @@ type FormValues = {
   personalImpact: string;
   priorExperience: string;
   preferredLanguage: string;
-  preferredLanguageOther: string;
   demoVideoUrl: string;
   consentOriginal: boolean;
   consentContact: boolean;
@@ -58,7 +56,6 @@ const DEFAULTS: FormValues = {
   occupationOther: "",
   organisation: "",
   isSymbiosisStudent: "",
-  institute: "",
   programme: "",
   yearOfStudy: "",
   prn: "",
@@ -69,7 +66,6 @@ const DEFAULTS: FormValues = {
   personalImpact: "",
   priorExperience: "",
   preferredLanguage: "",
-  preferredLanguageOther: "",
   demoVideoUrl: "",
   consentOriginal: false,
   consentContact: false,
@@ -314,7 +310,8 @@ export function SpeakerForm() {
                 <div className="grid gap-9 sm:grid-cols-2">
                   <SelectField label="Occupation" required options={OCCUPATIONS} error={err("occupation")} {...register("occupation")} />
                   <TextField
-                    label={isStudent ? "College / university" : "Organisation"}
+                    label={isStudent ? "University" : "Organisation"}
+                    placeholder={isStudent ? "e.g. Symbiosis University of Applied Sciences" : undefined}
                     required
                     autoComplete="organization"
                     error={err("organisation")}
@@ -352,12 +349,11 @@ export function SpeakerForm() {
                   <Reveal>
                     <div className="space-y-9 border-l border-red/60 pl-5 sm:pl-8">
                       <p className="eyebrow text-red-text">Student details</p>
-                      <TextField label="Symbiosis institute" required placeholder="e.g. SUAS, Indore" error={err("institute")} {...register("institute")} />
                       <div className="grid gap-9 sm:grid-cols-2">
                         <TextField label="Programme" required placeholder="e.g. B.Tech CSE" error={err("programme")} {...register("programme")} />
                         <SelectField label="Year of study" required options={YEARS} error={err("yearOfStudy")} {...register("yearOfStudy")} />
                       </div>
-                      <TextField label="PRN / enrolment number" required error={err("prn")} {...register("prn")} />
+                      <TextField label="PRN / Enrollment number" required error={err("prn")} {...register("prn")} />
                     </div>
                   </Reveal>
                 )}
@@ -417,6 +413,7 @@ export function SpeakerForm() {
                     <ChoiceField
                       name={field.name}
                       label="Preferred language for your talk"
+                      hint="Choose one."
                       required
                       value={field.value}
                       onChange={field.onChange}
@@ -425,9 +422,6 @@ export function SpeakerForm() {
                     />
                   )}
                 />
-                {values.preferredLanguage === "Other" && (
-                  <TextField label="Which language?" required error={err("preferredLanguageOther")} {...register("preferredLanguageOther")} />
-                )}
                 <TextField
                   label="Demo video link"
                   type="url"
@@ -443,11 +437,11 @@ export function SpeakerForm() {
 
             {step === 3 && (
               <div className="space-y-12">
-                <StepTitle n={4} title="Review & submit" sub="Read it through once. You can jump back to any step to edit." />
+                <StepTitle n={4} title="Review and submit" sub="Read it through once. You can jump back to any step to edit." />
                 <Review values={values} onEdit={goTo} />
                 <div className="space-y-4 border-t border-line pt-10">
                   <CheckField
-                    label="I confirm this idea and application are my own original work, and I agree to follow TEDx content guidelines."
+                    label="I confirm this idea and application are my own original work."
                     error={err("consentOriginal")}
                     {...register("consentOriginal")}
                   />
@@ -457,8 +451,8 @@ export function SpeakerForm() {
                     {...register("consentContact")}
                   />
                 </div>
-                <p className="border-l-2 border-red pl-4 text-grey">
-                  Our curation team reads every application. <span className="text-white">We&apos;ll get back to you within a month</span> of submission.
+                <p className="border-l-2 border-red pl-4 text-white">
+                  Our curation team reads every application. We&apos;ll get back to you within a month of submission.
                 </p>
               </div>
             )}
@@ -561,11 +555,10 @@ function Review({ values: v, onEdit }: { values: FormValues; onEdit: (step: numb
         ["Date of birth", v.birthdate],
         ["Phone", v.phone && `${v.phone}${v.phoneIsWhatsapp ? " · WhatsApp" : ""}`],
         ["Occupation", v.occupation === "Other" ? v.occupationOther : v.occupation],
-        [isStudent ? "College" : "Organisation", v.organisation],
+        [isStudent ? "University" : "Organisation", v.organisation],
         ...(isStudent ? ([["Symbiosis student", v.isSymbiosisStudent === "yes" ? "Yes" : "No"]] as [string, string][]) : []),
         ...(isSymbi
           ? ([
-              ["Institute", v.institute],
               ["Programme", v.programme],
               ["Year", v.yearOfStudy],
               ["PRN", v.prn],
@@ -589,7 +582,7 @@ function Review({ values: v, onEdit }: { values: FormValues; onEdit: (step: numb
       title: "Experience",
       rows: [
         ["Prior experience", v.priorExperience || "First time"],
-        ["Language", v.preferredLanguage === "Other" ? v.preferredLanguageOther : v.preferredLanguage],
+        ["Language", v.preferredLanguage],
         ["Demo video", v.demoVideoUrl],
       ],
     },
