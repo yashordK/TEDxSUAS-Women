@@ -6,7 +6,7 @@
  *   npm run admin -- remove someone@example.com
  *   npm run admin -- list
  *
- * New and reset accounts get ADMIN_INITIAL_PASSWORD and must change it on first login.
+ * New and reset accounts get ADMIN_INITIAL_PASSWORD; setting their own password is optional.
  */
 import "dotenv/config";
 import { neon } from "@neondatabase/serverless";
@@ -30,7 +30,7 @@ async function main() {
         values (${email}, ${name}, ${hash}, true)
         on conflict (email) do nothing
         returning email`;
-      console.log(rows.length ? `Added ${email} (${name}). They must change the temporary password on first login.` : `${email} already has access.`);
+      console.log(rows.length ? `Added ${email} (${name}). They sign in with the temporary password.` : `${email} already has access.`);
       break;
     }
     case "reset": {

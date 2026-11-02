@@ -177,3 +177,38 @@ export async function getNavCounts() {
   ]);
   return { pending: Number(pending), openQueries: Number(open) };
 }
+
+/* ------------------------------ activity ------------------------------ */
+
+const L = schema.activityLog;
+export const ACTIVITY_PAGE = 100;
+
+export async function listActivity(opts: { actor?: string; type?: string; page?: number } = {}) {
+  await requireAdmin();
+  const where: SQL[] = [];
+  if (opts.actor) where.push(eq(L.actor, opts.actor));
+  if (opts.type) where.push(eq(L.targetType, opts.type));
+  const page = Math.max(1, opts.page ?? 1);
+  const rows = await dbOrThrow()
+    .select()
+    .from(L)
+    .where(where.length ? and(...where) : undefined)
+    .orderBy(desc(L.at))
+    .limit(ACTIVITY_PAGE + 1)
+    .offset((page - 1) * ACTIVITY_PAGE);
+  return { rows: rows.slice(0, ACTIVITY_PAGE), hasMore: rows.length > ACTIVITY_PAGE, page };
+}
+
+export async function listActivityActors() {
+  await requireAdmin();
+  return dbOrThrow().selectDistinct({ actor: L.actor, actorName: L.actorName }).from(L).orderBy(L.actorName);
+}
+
+export async function activityFor(type: "application" | "query", id: string) {
+  await requireAdmin();
+  return dbOrThrow()
+    .select()
+    .from(L)
+    .where(and(eq(L.targetType, type), eq(L.targetId, id)))
+    .orderBy(desc(L.at));
+}

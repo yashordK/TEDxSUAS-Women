@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 export default async function LoginPage() {
   const admin = await getAdmin();
-  if (admin) redirect(admin.mustChangePassword ? "/admin/account?first=1" : "/admin");
+  if (admin) redirect("/admin");
 
   return (
     <main id="main" className="relative flex min-h-svh items-center justify-center overflow-hidden bg-black px-4">

@@ -5,6 +5,7 @@ import { db, schema } from "@/lib/db";
 import { querySchema } from "@/lib/schemas/query";
 import { rateLimit } from "@/lib/rate-limit";
 import { sendQueryNotification } from "@/lib/email";
+import { logActivity } from "@/lib/admin/activity";
 
 export type QueryResult = { ok: true } | { ok: false; error: string; fieldErrors?: Record<string, string> };
 
@@ -32,7 +33,8 @@ export async function submitQuery(input: unknown): Promise<QueryResult> {
 
   const { name, email, message } = parsed.data;
   try {
-    await db.insert(schema.queries).values({ name, email, message });
+    const [row] = await db.insert(schema.queries).values({ name, email, message }).returning({ id: schema.queries.id });
+    await logActivity("public", "query_raised", `${name} (${email}) asked a question`, { type: "query", id: row.id });
   } catch (err) {
     console.error("[query] save failed", err);
     return { ok: false, error: "We couldn't send your message just now. Please try again in a moment." };
