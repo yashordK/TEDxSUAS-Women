@@ -30,7 +30,7 @@ export function Header() {
   }, [open]);
 
   // The landing page uses the hero's own nav (components/hero/Nav.tsx).
-  if (pathname === "/") return null;
+  if (pathname === "/" || pathname.startsWith("/admin")) return null;
 
   return (
     <>

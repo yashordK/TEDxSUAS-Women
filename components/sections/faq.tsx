@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useId, useState } from "react";
 import { site } from "@/lib/site";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { AskForm } from "./ask-form";
 
 /** Edit questions here. Keep answers factual: only what organisers have confirmed. */
 const FAQS = [
@@ -87,6 +88,18 @@ export function Faq() {
             );
           })}
         </ul>
+      </div>
+
+      {/* Questions land in the organiser dashboard (/admin/queries) */}
+      <div id="ask" className="mt-24 grid scroll-mt-28 gap-12 border-t border-line pt-16 lg:grid-cols-12">
+        <div className="lg:col-span-5">
+          <p className="eyebrow text-red-text">Still wondering?</p>
+          <h3 className="display mt-4 text-4xl md:text-5xl">Ask us anything.</h3>
+          <p className="mt-4 max-w-sm text-grey">Send a question and an organiser will write back to you by email.</p>
+        </div>
+        <div className="lg:col-span-7">
+          <AskForm />
+        </div>
       </div>
     </section>
   );
