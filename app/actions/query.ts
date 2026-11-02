@@ -34,7 +34,7 @@ export async function submitQuery(input: unknown): Promise<QueryResult> {
   const { name, email, message } = parsed.data;
   try {
     const [row] = await db.insert(schema.queries).values({ name, email, message }).returning({ id: schema.queries.id });
-    await logActivity("public", "query_raised", `${name} (${email}) asked a question`, { type: "query", id: row.id });
+    await logActivity({ visitor: name }, "query_raised", `asked a question (${email})`, { type: "query", id: row.id });
   } catch (err) {
     console.error("[query] save failed", err);
     return { ok: false, error: "We couldn't send your message just now. Please try again in a moment." };

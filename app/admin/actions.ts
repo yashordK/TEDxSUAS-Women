@@ -55,13 +55,14 @@ export async function login(_: FormState, form: FormData): Promise<FormState> {
 
   await createSession(admin.id);
   await db.update(schema.admins).set({ lastLoginAt: new Date() }).where(eq(schema.admins.id, admin.id));
-  await logActivity(admin, "signed_in", "Signed in");
-  redirect("/admin");
+  await logActivity(admin, "signed_in", "signed in");
+  // First sign-in on the temporary password: suggest setting their own (skippable).
+  redirect(admin.mustChangePassword ? "/admin/account?first=1" : "/admin");
 }
 
 export async function logout() {
   const me = await getAdmin();
-  if (me) await logActivity(me, "signed_out", "Signed out");
+  if (me) await logActivity(me, "signed_out", "signed out");
   await destroySession();
   redirect("/admin/login");
 }
@@ -92,7 +93,8 @@ export async function changePassword(_: FormState, form: FormData): Promise<Form
   // Sign out other devices, keep this one.
   await destroyAllSessionsFor(me.id);
   await createSession(me.id);
-  await logActivity(me, "password_changed", "Changed their password");
+  await logActivity(me, "password_changed", "changed their password");
+  if (row.mustChangePassword) redirect("/admin");
 
   return { ok: true, message: "Password updated. Other devices have been signed out." };
 }
@@ -135,12 +137,12 @@ export async function updateApplication(_: FormState, form: FormData): Promise<F
     await logActivity(
       me,
       "status_changed",
-      `Changed ${who} from ${STATUS_LABEL[before.status]} to ${STATUS_LABEL[status]}`,
+      `changed ${who} from ${STATUS_LABEL[before.status]} to ${STATUS_LABEL[status]}`,
       target,
     );
   }
   if ((before.notes ?? null) !== newNotes) {
-    await logActivity(me, "notes_edited", `Edited notes on ${who}`, target);
+    await logActivity(me, "notes_edited", `edited notes on ${who}`, target);
   }
 
   revalidatePath("/admin", "layout");
@@ -168,7 +170,7 @@ export async function setQueryStatus(form: FormData) {
     await logActivity(
       me,
       status === "resolved" ? "query_resolved" : "query_reopened",
-      `${status === "resolved" ? "Resolved" : "Reopened"} the question from ${q.name}`,
+      `${status === "resolved" ? "resolved" : "reopened"} the question from ${q.name}`,
       { type: "query", id },
     );
   }
@@ -200,7 +202,7 @@ export async function addAdmin(_: FormState, form: FormData): Promise<FormState>
     .onConflictDoNothing()
     .returning({ id: schema.admins.id });
   if (!inserted.length) return { error: `${parsed.data.email} already has access.` };
-  await logActivity(me, "admin_added", `Gave access to ${parsed.data.name} (${parsed.data.email})`, {
+  await logActivity(me, "admin_added", `gave access to ${parsed.data.name} (${parsed.data.email})`, {
     type: "admin",
     id: inserted[0].id,
   });
@@ -223,7 +225,7 @@ export async function resetAdmin(form: FormData) {
     .returning({ name: schema.admins.name, email: schema.admins.email });
   await destroyAllSessionsFor(id);
   if (target) {
-    await logActivity(me, "admin_reset", `Reset ${target.name}'s password to the temporary one`, { type: "admin", id });
+    await logActivity(me, "admin_reset", `reset ${target.name}'s password to the temporary one`, { type: "admin", id });
   }
   revalidatePath("/admin/team");
 }
@@ -239,6 +241,6 @@ export async function removeAdmin(form: FormData) {
     .delete(schema.admins)
     .where(and(eq(schema.admins.id, id), ne(schema.admins.id, me.id)))
     .returning({ name: schema.admins.name, email: schema.admins.email });
-  if (gone) await logActivity(me, "admin_removed", `Removed access for ${gone.name} (${gone.email})`, { type: "admin", id });
+  if (gone) await logActivity(me, "admin_removed", `removed access for ${gone.name} (${gone.email})`, { type: "admin", id });
   revalidatePath("/admin/team");
 }

@@ -201,7 +201,12 @@ export async function listActivity(opts: { actor?: string; type?: string; page?:
 
 export async function listActivityActors() {
   await requireAdmin();
-  return dbOrThrow().selectDistinct({ actor: L.actor, actorName: L.actorName }).from(L).orderBy(L.actorName);
+  // One row per actor; every visitor shares the "public" actor.
+  return dbOrThrow()
+    .select({ actor: L.actor, actorName: sql<string>`max(${L.actorName})` })
+    .from(L)
+    .groupBy(L.actor)
+    .orderBy(sql`max(${L.actorName})`);
 }
 
 export async function activityFor(type: "application" | "query", id: string) {

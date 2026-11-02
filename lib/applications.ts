@@ -57,7 +57,7 @@ export async function saveApplication(a: SpeakerApplication): Promise<string> {
           .insert(schema.speakerApplications)
           .values(toRow(a, refCode))
           .returning({ id: schema.speakerApplications.id });
-        await logActivity("public", "application_submitted", `${a.fullName} applied to speak: "${a.ideaTitle}" (${refCode})`, {
+        await logActivity({ visitor: a.fullName }, "application_submitted", `applied to speak: "${a.ideaTitle}" (${refCode})`, {
           type: "application",
           id: row.id,
         });
