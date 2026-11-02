@@ -5,6 +5,7 @@ import { site } from "@/lib/site";
 import { Providers } from "@/components/providers";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { HideOnAdmin } from "@/components/hide-on-admin";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -30,7 +31,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           {/* Header renders on inner pages only; the landing hero has its own nav. */}
           <Header />
           {children}
-          <Footer />
+          <HideOnAdmin>
+            <Footer />
+          </HideOnAdmin>
         </Providers>
       </body>
     </html>

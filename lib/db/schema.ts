@@ -39,9 +39,66 @@ export const speakerApplications = pgTable(
     consentContact: boolean("consent_contact").notNull(),
     status: text("status", { enum: APPLICATION_STATUSES }).notNull().default("new"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+
+    // Organiser review (admin dashboard)
+    notes: text("notes"),
+    updatedAt: timestamp("updated_at", { withTimezone: true }),
+    updatedBy: text("updated_by"), // admin email
   },
-  (t) => [index("speaker_applications_email_idx").on(t.email), index("speaker_applications_created_idx").on(t.createdAt)],
+  (t) => [
+    index("speaker_applications_email_idx").on(t.email),
+    index("speaker_applications_created_idx").on(t.createdAt),
+    index("speaker_applications_status_idx").on(t.status),
+  ],
 );
 
 export type SpeakerApplicationRow = typeof speakerApplications.$inferSelect;
 export type NewSpeakerApplicationRow = typeof speakerApplications.$inferInsert;
+
+/* ------------------------------ Admin ------------------------------ */
+
+export const admins = pgTable("admins", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  email: text("email").notNull().unique(), // stored lowercase
+  name: text("name").notNull(),
+  passwordHash: text("password_hash").notNull(),
+  mustChangePassword: boolean("must_change_password").notNull().default(true),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
+});
+
+export const adminSessions = pgTable(
+  "admin_sessions",
+  {
+    // sha256 of the cookie token; the raw token never touches the database
+    tokenHash: text("token_hash").primaryKey(),
+    adminId: uuid("admin_id")
+      .notNull()
+      .references(() => admins.id, { onDelete: "cascade" }),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("admin_sessions_admin_idx").on(t.adminId)],
+);
+
+/* ----------------------------- Queries ----------------------------- */
+
+export const QUERY_STATUSES = ["open", "resolved"] as const;
+
+export const queries = pgTable(
+  "queries",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: text("name").notNull(),
+    email: text("email").notNull(),
+    message: text("message").notNull(),
+    status: text("status", { enum: QUERY_STATUSES }).notNull().default("open"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    resolvedAt: timestamp("resolved_at", { withTimezone: true }),
+    resolvedBy: text("resolved_by"),
+  },
+  (t) => [index("queries_status_idx").on(t.status), index("queries_created_idx").on(t.createdAt)],
+);
+
+export type AdminRow = typeof admins.$inferSelect;
+export type QueryRow = typeof queries.$inferSelect;

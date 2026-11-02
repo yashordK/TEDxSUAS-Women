@@ -102,3 +102,16 @@ export async function sendOrganiserNotification(a: SpeakerApplication, refCode: 
     a.email,
   );
 }
+
+export async function sendQueryNotification(q: { name: string; email: string; message: string }) {
+  await send(
+    site.organisers.map((o) => o.email),
+    `New question from ${q.name}`,
+    shell(`
+      <h1 style="font-family:Georgia,serif;font-size:24px;margin:0 0 4px">A new question</h1>
+      <p style="margin:0 0 20px;color:#8a8a8a">${esc(q.name)} · ${esc(q.email)}</p>
+      <p style="line-height:1.6;color:#cfc4c8">${para(q.message)}</p>
+      <p style="line-height:1.6;color:#8a8a8a;font-size:13px">Reply to this email to answer, then mark it resolved in the dashboard.</p>`),
+    q.email,
+  );
+}
