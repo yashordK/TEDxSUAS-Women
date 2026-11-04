@@ -12,12 +12,15 @@ import {
   MIN_PASSWORD_LENGTH,
   createSession,
   destroyAllSessionsFor,
+  getAdmin,
   destroySession,
   hashPassword,
   initialPassword,
   requireAdmin,
   verifyPassword,
 } from "@/lib/admin/auth";
+import { logActivity } from "@/lib/admin/activity";
+import { STATUS_LABEL } from "@/lib/admin/status";
 
 export type FormState = { ok?: boolean; error?: string; message?: string };
 
@@ -52,16 +55,20 @@ export async function login(_: FormState, form: FormData): Promise<FormState> {
 
   await createSession(admin.id);
   await db.update(schema.admins).set({ lastLoginAt: new Date() }).where(eq(schema.admins.id, admin.id));
+  await logActivity(admin, "signed_in", "signed in");
+  // First sign-in on the temporary password: suggest setting their own (skippable).
   redirect(admin.mustChangePassword ? "/admin/account?first=1" : "/admin");
 }
 
 export async function logout() {
+  const me = await getAdmin();
+  if (me) await logActivity(me, "signed_out", "signed out");
   await destroySession();
   redirect("/admin/login");
 }
 
 export async function changePassword(_: FormState, form: FormData): Promise<FormState> {
-  const me = await requireAdmin({ allowTemporaryPassword: true });
+  const me = await requireAdmin();
   const current = String(form.get("current") ?? "");
   const next = String(form.get("next") ?? "");
   const confirm = String(form.get("confirm") ?? "");
@@ -86,8 +93,9 @@ export async function changePassword(_: FormState, form: FormData): Promise<Form
   // Sign out other devices, keep this one.
   await destroyAllSessionsFor(me.id);
   await createSession(me.id);
-
+  await logActivity(me, "password_changed", "changed their password");
   if (row.mustChangePassword) redirect("/admin");
+
   return { ok: true, message: "Password updated. Other devices have been signed out." };
 }
 
@@ -108,11 +116,34 @@ export async function updateApplication(_: FormState, form: FormData): Promise<F
   });
   if (!parsed.success) return { error: "Couldn't save: invalid status or notes." };
   const { id, status, notes } = parsed.data;
+  const A = schema.speakerApplications;
+
+  const [before] = await d()
+    .select({ status: A.status, notes: A.notes, refCode: A.refCode, fullName: A.fullName })
+    .from(A)
+    .where(eq(A.id, id))
+    .limit(1);
+  if (!before) return { error: "That application no longer exists." };
+  const newNotes = notes?.trim() || null;
 
   await d()
-    .update(schema.speakerApplications)
-    .set({ status, notes: notes?.trim() || null, updatedAt: new Date(), updatedBy: me.email })
-    .where(eq(schema.speakerApplications.id, id));
+    .update(A)
+    .set({ status, notes: newNotes, updatedAt: new Date(), updatedBy: me.email })
+    .where(eq(A.id, id));
+
+  const who = `${before.fullName} (${before.refCode})`;
+  const target = { type: "application" as const, id };
+  if (before.status !== status) {
+    await logActivity(
+      me,
+      "status_changed",
+      `changed ${who} from ${STATUS_LABEL[before.status]} to ${STATUS_LABEL[status]}`,
+      target,
+    );
+  }
+  if ((before.notes ?? null) !== newNotes) {
+    await logActivity(me, "notes_edited", `edited notes on ${who}`, target);
+  }
 
   revalidatePath("/admin", "layout");
   return { ok: true, message: "Saved." };
@@ -134,6 +165,15 @@ export async function setQueryStatus(form: FormData) {
         : { status: "open", resolvedAt: null, resolvedBy: null },
     )
     .where(eq(schema.queries.id, id));
+  const [q] = await d().select({ name: schema.queries.name }).from(schema.queries).where(eq(schema.queries.id, id)).limit(1);
+  if (q) {
+    await logActivity(
+      me,
+      status === "resolved" ? "query_resolved" : "query_reopened",
+      `${status === "resolved" ? "resolved" : "reopened"} the question from ${q.name}`,
+      { type: "query", id },
+    );
+  }
   revalidatePath("/admin", "layout");
 }
 
@@ -145,7 +185,7 @@ const addAdminSchema = z.object({
 });
 
 export async function addAdmin(_: FormState, form: FormData): Promise<FormState> {
-  await requireAdmin();
+  const me = await requireAdmin();
   const parsed = addAdminSchema.safeParse({ email: form.get("email"), name: form.get("name") });
   if (!parsed.success) return { error: parsed.error.issues[0].message };
 
@@ -162,20 +202,31 @@ export async function addAdmin(_: FormState, form: FormData): Promise<FormState>
     .onConflictDoNothing()
     .returning({ id: schema.admins.id });
   if (!inserted.length) return { error: `${parsed.data.email} already has access.` };
+  await logActivity(me, "admin_added", `gave access to ${parsed.data.name} (${parsed.data.email})`, {
+    type: "admin",
+    id: inserted[0].id,
+  });
 
   revalidatePath("/admin/team");
-  return { ok: true, message: `Added ${parsed.data.name}. They sign in with the temporary password and must change it.` };
+  return {
+    ok: true,
+    message: `Added ${parsed.data.name}. They sign in with the temporary password and can set their own from My account.`,
+  };
 }
 
 export async function resetAdmin(form: FormData) {
   const me = await requireAdmin();
   const id = String(form.get("id") ?? "");
   if (!z.string().uuid().safeParse(id).success || id === me.id) return;
-  await d()
+  const [target] = await d()
     .update(schema.admins)
     .set({ passwordHash: await hashPassword(initialPassword()), mustChangePassword: true })
-    .where(eq(schema.admins.id, id));
+    .where(eq(schema.admins.id, id))
+    .returning({ name: schema.admins.name, email: schema.admins.email });
   await destroyAllSessionsFor(id);
+  if (target) {
+    await logActivity(me, "admin_reset", `reset ${target.name}'s password to the temporary one`, { type: "admin", id });
+  }
   revalidatePath("/admin/team");
 }
 
@@ -186,6 +237,10 @@ export async function removeAdmin(form: FormData) {
   // Never remove the last remaining admin.
   const others = await d().select({ id: schema.admins.id }).from(schema.admins).where(ne(schema.admins.id, id)).limit(1);
   if (!others.length) return;
-  await d().delete(schema.admins).where(and(eq(schema.admins.id, id), ne(schema.admins.id, me.id)));
+  const [gone] = await d()
+    .delete(schema.admins)
+    .where(and(eq(schema.admins.id, id), ne(schema.admins.id, me.id)))
+    .returning({ name: schema.admins.name, email: schema.admins.email });
+  if (gone) await logActivity(me, "admin_removed", `removed access for ${gone.name} (${gone.email})`, { type: "admin", id });
   revalidatePath("/admin/team");
 }

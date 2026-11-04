@@ -9,24 +9,24 @@ import { logout } from "@/app/admin/actions";
 type Props = {
   admin: { name: string; email: string };
   counts: { pending: number; openQueries: number };
-  locked: boolean; // temporary password still in use
 };
 
 const NAV = [
   { href: "/admin", label: "Overview", exact: true },
   { href: "/admin/applications", label: "Applications", badge: "pending" as const },
   { href: "/admin/queries", label: "Queries", badge: "openQueries" as const },
+  { href: "/admin/activity", label: "Activity log" },
   { href: "/admin/team", label: "Team access" },
   { href: "/admin/account", label: "My account" },
 ];
 
-export function Sidebar({ admin, counts, locked }: Props) {
+export function Sidebar({ admin, counts }: Props) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
   const links = (
     <nav aria-label="Dashboard" className="flex flex-col gap-1">
-      {NAV.filter((n) => !locked || n.href === "/admin/account").map((n) => {
+      {NAV.map((n) => {
         const active = n.exact ? pathname === n.href : pathname.startsWith(n.href);
         const badge = n.badge ? counts[n.badge] : 0;
         return (

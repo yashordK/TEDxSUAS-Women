@@ -76,11 +76,10 @@ export const getAdmin = cache(async (): Promise<CurrentAdmin | null> => {
 
 /**
  * Guard for every admin page and server action. Redirects to login when signed
- * out, and to the password page while a temporary password is still in use.
+ * out. Organisers still on the temporary password are reminded, not blocked.
  */
-export async function requireAdmin(opts: { allowTemporaryPassword?: boolean } = {}) {
+export async function requireAdmin() {
   const admin = await getAdmin();
   if (!admin) redirect("/admin/login");
-  if (admin.mustChangePassword && !opts.allowTemporaryPassword) redirect("/admin/account?first=1");
   return admin;
 }

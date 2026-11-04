@@ -41,7 +41,7 @@ function cell(v: unknown) {
 
 export async function GET(req: NextRequest) {
   const admin = await getAdmin();
-  if (!admin || admin.mustChangePassword) return new NextResponse("Unauthorized", { status: 401 });
+  if (!admin) return new NextResponse("Unauthorized", { status: 401 });
   const p = req.nextUrl.searchParams;
   const rows = await exportApplications({
     q: p.get("q") ?? undefined,

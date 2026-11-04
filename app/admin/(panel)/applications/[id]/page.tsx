@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/admin/auth";
-import { getApplication } from "@/lib/admin/data";
+import { activityFor, getApplication } from "@/lib/admin/data";
+import { ActivityList } from "@/components/admin/activity-list";
 import { ReviewForm } from "@/components/admin/forms";
 import { Card, StatusBadge, btnGhost, fmtDate } from "@/components/admin/ui";
 
@@ -19,6 +20,7 @@ export default async function ApplicationDetail({ params }: { params: Promise<{ 
   const { id } = await params;
   const a = await getApplication(id);
   if (!a) notFound();
+  const history = await activityFor("application", a.id);
 
   const phoneDigits = a.phone.replace(/[^\d]/g, "");
   const wa = phoneDigits.length === 10 ? `91${phoneDigits}` : phoneDigits;
@@ -120,6 +122,10 @@ export default async function ApplicationDetail({ params }: { params: Promise<{ 
                 Last updated by {a.updatedBy} · {fmtDate(a.updatedAt)}
               </p>
             )}
+          </Card>
+          <Card>
+            <h2 className="mb-1 text-xs font-semibold uppercase tracking-[0.2em] text-white/60">History</h2>
+            <ActivityList rows={history} compact />
           </Card>
         </aside>
       </div>

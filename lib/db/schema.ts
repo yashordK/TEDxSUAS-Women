@@ -102,3 +102,23 @@ export const queries = pgTable(
 
 export type AdminRow = typeof admins.$inferSelect;
 export type QueryRow = typeof queries.$inferSelect;
+
+/* --------------------------- Activity log --------------------------- */
+
+// Who did what. Actor is an organiser's email, or "public" for visitors.
+export const activityLog = pgTable(
+  "activity_log",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    at: timestamp("at", { withTimezone: true }).notNull().defaultNow(),
+    actor: text("actor").notNull(),
+    actorName: text("actor_name").notNull(),
+    action: text("action").notNull(),
+    targetType: text("target_type"), // application | query | admin
+    targetId: text("target_id"),
+    summary: text("summary").notNull(),
+  },
+  (t) => [index("activity_at_idx").on(t.at), index("activity_target_idx").on(t.targetType, t.targetId)],
+);
+
+export type ActivityRow = typeof activityLog.$inferSelect;

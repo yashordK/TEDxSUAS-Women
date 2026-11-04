@@ -3,6 +3,7 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { db, schema } from "@/lib/db";
+import { logActivity } from "@/lib/admin/activity";
 import type { SpeakerApplication } from "@/lib/schemas/speaker";
 import type { NewSpeakerApplicationRow } from "@/lib/db/schema";
 
@@ -52,7 +53,14 @@ export async function saveApplication(a: SpeakerApplication): Promise<string> {
     for (let attempt = 0; attempt < 3; attempt++) {
       const refCode = makeRefCode();
       try {
-        await db.insert(schema.speakerApplications).values(toRow(a, refCode));
+        const [row] = await db
+          .insert(schema.speakerApplications)
+          .values(toRow(a, refCode))
+          .returning({ id: schema.speakerApplications.id });
+        await logActivity({ visitor: a.fullName }, "application_submitted", `applied to speak: "${a.ideaTitle}" (${refCode})`, {
+          type: "application",
+          id: row.id,
+        });
         return refCode;
       } catch (err) {
         if (attempt < 2 && String(err).includes("ref_code")) continue;
